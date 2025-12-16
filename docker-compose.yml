@@ -1,0 +1,13 @@
+services:
+  game-learning:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fictitious-play-rl
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
+

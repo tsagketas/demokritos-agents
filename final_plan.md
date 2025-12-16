@@ -192,6 +192,20 @@ class QLearningAgent:
 | **Cumulative Reward** | Total payoff over time | `Σ rewards` |
 | **Regret** | Loss vs optimal play | `Σ(best - actual)` |
 | **Variance** | Strategy stability | `σ²(strategy)` |
+| **Convergence Speed** | Iterations to reach 95% Nash | `min t: \|\|strategy(t) - Nash\|\| < 0.05` |
+| **Strategy Stability** | Variance in mixed strategy over time | `σ²(strategy_t)` per iteration |
+
+### Enhanced Evaluation (Beyond Payoff)
+
+**Robustness Testing:**
+- FP vs RL vs Random opponent
+- Adaptation analysis when opponent changes
+- Failure scenarios: when FP/RL fails and why
+
+**Comparative Analysis:**
+- Why FP works well or fails in specific scenarios
+- Why RL adapts better in certain situations
+- Multi-agent learning insights
 
 ---
 
@@ -297,6 +311,13 @@ class QLearningAgent:
 - RL robust but needs tuning
 - Learning rate critical for RL
 - Exploration-exploitation tradeoff
+
+**Enhanced Analysis:**
+- **Failure Scenarios:** When does FP fail? When does RL fail? Why?
+- **Adaptation Analysis:** How do agents adapt when opponent changes?
+- **Robustness:** FP vs RL vs Random opponent performance
+- **Practical Implications:** What does this mean for real-world multi-agent systems?
+- **Multi-agent Learning Insights:** Deeper understanding beyond "who wins more"
 
 ### 7. Conclusions (0.5 page)
 - Summary
