@@ -107,6 +107,14 @@ def run_fp_vs_rl_rps(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42
         },
         'Distance to Nash', 'results/plots/fp_vs_rl_rps_distance_comparison.png'
     )
+
+    plot_comparison_multiple_agents(
+        {
+            'FP': np.cumsum(results['agent1_reward_history']),
+            'RL': np.cumsum(results['agent2_reward_history'])
+        },
+        'Cumulative Reward', 'results/plots/fp_vs_rl_rps_reward_comparison.png'
+    )
     
     print("Plots saved to results/plots/")
     return results

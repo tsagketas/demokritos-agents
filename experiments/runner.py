@@ -52,6 +52,10 @@ class ExperimentRunner:
         Returns:
             Dictionary with results
         """
+        # Set player IDs
+        self.agent1.set_player_id(0)
+        self.agent2.set_player_id(1)
+        
         # Reset agents
         self.agent1.reset()
         self.agent2.reset()
@@ -65,9 +69,12 @@ class ExperimentRunner:
             action1 = self.agent1.act(self.game)
             action2 = self.agent2.act(self.game)
             
-            # Get payoffs
-            payoff1 = self.game.get_payoff(action1, action2)
-            payoff2 = self.game.get_payoff(action2, action1)  # Column player gets opposite
+            # Get payoffs and handle state transitions
+            if hasattr(self.game, 'step'):
+                payoff1, payoff2 = self.game.step(action1, action2)
+            else:
+                payoff1 = self.game.get_payoff(action1, action2)
+                payoff2 = -payoff1  # Zero-sum: P2 payoff is negative of P1 payoff
             
             # Update agents
             self.agent1.update(action1, payoff1, action2)

@@ -58,15 +58,7 @@ def cumulative_reward(reward_history):
 
 def regret(action_history, reward_history, best_possible_reward):
     """
-    Calculate cumulative regret: loss vs optimal play.
-    
-    Args:
-        action_history: List of actions taken
-        reward_history: List of rewards received
-        best_possible_reward: Best possible reward per round
-        
-    Returns:
-        Cumulative regret (float)
+    Calculate cumulative regret against optimal constant reward (Regret against Nature).
     """
     if not reward_history:
         return 0.0
@@ -74,6 +66,58 @@ def regret(action_history, reward_history, best_possible_reward):
     total_reward = sum(reward_history)
     optimal_reward = best_possible_reward * len(reward_history)
     return optimal_reward - total_reward
+
+
+def external_regret(agent_history, opponent_history, game, player_id):
+    """
+    Calculate External Regret: Max gain if we had played the best fixed action 
+    against the opponent's actual history, minus actual reward.
+    
+    Args:
+        agent_history: List of actions taken by agent
+        opponent_history: List of actions taken by opponent
+        game: Game object
+        player_id: 0 (Row) or 1 (Col)
+        
+    Returns:
+        External Regret (float)
+    """
+    if not agent_history or not opponent_history:
+        return 0.0
+        
+    # Calculate actual total reward
+    actual_reward = 0
+    opponent_history_indices = np.array(opponent_history)
+    
+    # Calculate expected reward for each fixed action against opponent's history
+    # We sum payoffs for playing action 'a' against all 'b' in opponent_history
+    
+    n_actions = game.n_actions
+    cumulative_payoffs_for_fixed_actions = np.zeros(n_actions)
+    
+    for i, opp_action in enumerate(opponent_history):
+        # Calculate actual reward received
+        my_action = agent_history[i]
+        
+        if player_id == 0:
+            payoff = game.payoff_matrix[my_action, opp_action]
+            # Accumulate potential payoffs for all fixed actions
+            cumulative_payoffs_for_fixed_actions += game.payoff_matrix[:, opp_action]
+        else:
+            # P2 payoff is negative of P1 payoff
+            payoff = -game.payoff_matrix[opp_action, my_action]
+            # P2 potential payoffs: row i is P2 action, col j is P1 action (opp)
+            # P1 matrix is M[opp_action, my_candidate]
+            # P2 payoff is -M[opp_action, my_candidate]
+            # We want vector of size n_actions (my_candidate)
+            cumulative_payoffs_for_fixed_actions += -game.payoff_matrix[opp_action, :]
+            
+        actual_reward += payoff
+        
+    # Best fixed strategy payoff
+    best_fixed_reward = np.max(cumulative_payoffs_for_fixed_actions)
+    
+    return best_fixed_reward - actual_reward
 
 
 def strategy_variance(strategy_history):
