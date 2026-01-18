@@ -17,27 +17,34 @@ def distance_to_nash(strategy, nash_equilibrium):
     return np.linalg.norm(strategy - nash_equilibrium)
 
 
-def exploitability(strategy, game):
+def exploitability(strategy, game, player_id=0):
     """
     Calculate exploitability: maximum gain from best response.
     
     Args:
         strategy: Current mixed strategy
         game: Game object
+        player_id: 0 for Row Player, 1 for Column Player (default: 0)
         
     Returns:
         Exploitability value (float)
     """
     strategy = np.array(strategy)
     
-    # Best response to current strategy
-    best_response = game.best_response(strategy)
+    # Best response to current strategy (for the specified player)
+    best_response = game.best_response(strategy, player_id=player_id)
     
     # Expected payoff of best response
-    expected_payoff_br = np.dot(game.payoff_matrix[best_response], strategy)
-    
-    # Expected payoff of current strategy
-    expected_payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+    if player_id == 0:
+        # Row player: best_response is row action, strategy is column distribution
+        expected_payoff_br = np.dot(game.payoff_matrix[best_response], strategy)
+        # Expected payoff of current strategy (both players use strategy)
+        expected_payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+    else:
+        # Column player: best_response is column action, strategy is row distribution
+        # Column player's payoff is negative of row player's payoff
+        expected_payoff_br = -np.dot(game.payoff_matrix[:, best_response], strategy)
+        expected_payoff_current = -np.dot(strategy, game.payoff_matrix @ strategy)
     
     # Exploitability = difference
     return expected_payoff_br - expected_payoff_current

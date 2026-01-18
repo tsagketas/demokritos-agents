@@ -56,12 +56,12 @@ python -m experiments.fp_vs_rl
 
 | Step | Task | Status | Priority |
 |------|------|--------|----------|
-| 1 | **Refactor BaseGame** <br> Fix `best_response` for P2 (Column). | 🔴 Todo | High |
-| 2 | **Optimize FP** <br> Incremental belief updates. | 🔴 Todo | High |
-| 3 | **Enhance Q-Learning** <br> Add decay for `epsilon` & `lr`. | 🔴 Todo | Medium |
-| 4 | **Fix Metrics** <br> Correct `regret` calculation. | 🔴 Todo | Medium |
-| 5 | **New Feature: Stochastic Game** <br> Implement a simple state-based game. | ⚪ Todo | Low |
-| 6 | **Re-run Experiments** <br> Generate new plots with fixed logic. | ⚪ Todo | High |
+| 1 | **Refactor BaseGame** <br> Fix `best_response` for P2 (Column). | 🟢 Done | High |
+| 2 | **Optimize FP** <br> Incremental belief updates. | 🟢 Done | High |
+| 3 | **Enhance Q-Learning** <br> Add decay for `epsilon` & `lr`. | 🟢 Done | Medium |
+| 4 | **Fix Metrics** <br> Correct `regret` calculation. | 🟢 Done | Medium |
+| 5 | **New Feature: Stochastic Game** <br> Implement a simple state-based game. | 🟢 Done | Low |
+| 6 | **Re-run Experiments** <br> Generate new plots with fixed logic. | 🟢 Done | High |
 
 ---
 *Use this file to recall the plan and rules. Update it when significant changes occur.*

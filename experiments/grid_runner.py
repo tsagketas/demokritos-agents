@@ -21,33 +21,33 @@ def plot_capture_heatmap(capture_locations, size=3, filename='grid_capture_heatm
     plt.savefig(filename)
     plt.close()
 
-def run_grid_experiment(n_iterations=50000, seed=42):
+def run_grid_experiment(n_iterations=200000, seed=42):
     print("="*60)
-    print("Grid Game (Hunter vs Prey) Experiment")
+    print("Grid Game (Hunter vs Prey) Experiment - 5x5 GRID")
     print("="*60)
     
-    game = GridGame(size=3)
+    game = GridGame(size=5)
     
     # RL Agents
     # Hunter (P1)
     hunter = StochasticQLearningAgent(
         n_actions=5, 
-        n_states=81, # 3^4
+        n_states=625, # 5^4
         learning_rate=0.1, 
         epsilon=0.5, # Start with high exploration
-        lr_decay=0.99998,
-        epsilon_decay=0.99995,
+        lr_decay=0.99999, # Slower decay for larger grid
+        epsilon_decay=0.99998,
         name="Hunter"
     )
     
     # Prey (P2)
     prey = StochasticQLearningAgent(
         n_actions=5, 
-        n_states=81,
+        n_states=625,
         learning_rate=0.1, 
         epsilon=0.5,
-        lr_decay=0.99998,
-        epsilon_decay=0.99995,
+        lr_decay=0.99999,
+        epsilon_decay=0.99998,
         name="Prey"
     )
     

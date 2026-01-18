@@ -87,8 +87,8 @@ class ExperimentRunner:
             # Calculate metrics
             dist1 = distance_to_nash(strategy1, nash)
             dist2 = distance_to_nash(strategy2, nash)
-            expl1 = exploitability(strategy1, self.game)
-            expl2 = exploitability(strategy2, self.game)
+            expl1 = exploitability(strategy1, self.game, player_id=0)
+            expl2 = exploitability(strategy2, self.game, player_id=1)
             
             # Store results
             self.results['agent1_strategy_history'].append(strategy1.copy())
