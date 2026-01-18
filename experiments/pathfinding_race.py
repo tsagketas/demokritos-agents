@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import os
 from typing import Tuple, List, Dict
+from tqdm import tqdm
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -37,12 +38,13 @@ class PathfindingRace:
         self.agent2 = agent2
         self.max_steps = max_steps
     
-    def run_episode(self, visualize: bool = False) -> Dict:
+    def run_episode(self, visualize: bool = False, save_path: str = None) -> Dict:
         """
         Run a single episode race.
         
         Args:
             visualize: Whether to visualize the episode
+            save_path: Optional path to save visualization (e.g. 'video.gif')
             
         Returns:
             Dictionary with results:
@@ -139,12 +141,12 @@ class PathfindingRace:
         
         # Visualize if requested
         if visualize:
-            visualizer = PathfindingVisualizer(self.game)
+            visualizer = PathfindingVisualizer(self.game, save_path=save_path)
             visualizer.visualize_episode(
                 positions1, positions2,
                 agent1_name=self.agent1.name,
                 agent2_name=self.agent2.name,
-                interval=200,
+                interval=50,  # Faster animation
                 show_path=True
             )
         
@@ -263,7 +265,7 @@ def main():
     race = PathfindingRace(game, agent1, agent2, max_steps=300)
     
     # Run multiple episodes for learning
-    n_learning_episodes = 50  # Good number for learning
+    n_learning_episodes = 20000  # Increased for massive learning
     print(f"\nRunning {n_learning_episodes} episodes for Q-Learning to learn...")
     print("(Will show only first and last episode for comparison)")
     
@@ -274,7 +276,8 @@ def main():
     print("\n" + "="*60)
     print("EPISODE 1 (First Run):")
     print("="*60)
-    first_results = race.run_episode(visualize=False)
+    # Visualize first run as requested
+    first_results = race.run_episode(visualize=True, save_path='results/plots/episode_1.gif')
     first_metrics = {
         'episode': 1,
         'agent1_steps': first_results['agent1_steps'],
@@ -300,8 +303,13 @@ def main():
     print(f"  Avg reward per step: {first_metrics['agent2_avg_reward']:.4f}")
     
     # Learning episodes (silent - no output)
-    print(f"\nRunning episodes 2-{n_learning_episodes-1} (learning in progress, no output)...")
-    for i in range(1, n_learning_episodes - 1):
+    print(f"\nRunning episodes 2-{n_learning_episodes-1} (learning in progress)...")
+    
+    best_ql_steps = float('inf')
+    best_ql_results = None
+    best_ql_episode = -1
+
+    for i in tqdm(range(1, n_learning_episodes - 1), desc="Training Progress", unit="ep"):
         results = race.run_episode(visualize=False)
         metrics = {
             'episode': i + 1,
@@ -315,13 +323,41 @@ def main():
             'agent2_avg_reward': np.mean(results['agent2_rewards']) if results['agent2_rewards'] else 0,
         }
         all_metrics.append(metrics)
+        
+        # Track best Q-Learning run
+        if results['agent1_done'] and results['agent1_steps'] < best_ql_steps:
+            best_ql_steps = results['agent1_steps']
+            best_ql_results = results
+            best_ql_episode = i + 1
     
     # Last episode (for comparison)
     print(f"\nRunning episode {n_learning_episodes} (final run with visualization)...")
     print("="*60)
     print(f"EPISODE {n_learning_episodes} (Final Run):")
     print("="*60)
-    last_results = race.run_episode(visualize=True)
+    last_results = race.run_episode(visualize=True, save_path=f'results/plots/episode_{n_learning_episodes}.gif')
+    
+    # Check if last run is the best
+    if last_results['agent1_done'] and last_results['agent1_steps'] < best_ql_steps:
+        best_ql_steps = last_results['agent1_steps']
+        best_ql_results = last_results
+        best_ql_episode = n_learning_episodes
+
+    # Visualize Best Run
+    if best_ql_results:
+        print("\n" + "="*60)
+        print(f"VISUALIZING BEST Q-LEARNING RUN (Episode {best_ql_episode}, {best_ql_steps} steps):")
+        print("="*60)
+        visualizer = PathfindingVisualizer(game, save_path='results/plots/best_ql_run.gif')
+        visualizer.visualize_episode(
+            best_ql_results['agent1_positions'],
+            best_ql_results['agent2_positions'],
+            agent1_name=f"{agent1.name} (BEST)",
+            agent2_name=agent2.name,
+            interval=50,
+            show_path=True
+        )
+
     last_metrics = {
         'episode': n_learning_episodes,
         'agent1_steps': last_results['agent1_steps'],

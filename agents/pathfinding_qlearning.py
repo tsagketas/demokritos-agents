@@ -129,3 +129,13 @@ class PathfindingQLearningAgent(BaseAgent):
         # Softmax with temperature
         exp_q = np.exp(q_values - np.max(q_values))
         return exp_q / np.sum(exp_q)
+
+    def save(self, filepath: str):
+        """Save Q-table to file."""
+        import os
+        os.makedirs(os.path.dirname(filepath) if os.path.dirname(filepath) else '.', exist_ok=True)
+        np.save(filepath, self.Q)
+        
+    def load(self, filepath: str):
+        """Load Q-table from file."""
+        self.Q = np.load(filepath)

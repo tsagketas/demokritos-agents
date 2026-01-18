@@ -23,12 +23,19 @@ class PathfindingGreedyAgent(BaseAgent):
             name: Agent name
         """
         super().__init__(n_actions=4, name=name or "PathfindingGreedy")
+        self.last_pos = None
+        
+    def reset(self):
+        """Reset agent state."""
+        super().reset()
+        self.last_pos = None
     
     def act(self, current_pos: Tuple[int, int], goal_pos: Tuple[int, int], 
             game=None) -> int:
         """
         Choose action that moves towards goal (greedy).
         Checks for walls and avoids them.
+        Avoids immediate backtracking to prevent oscillations.
         
         Args:
             current_pos: Current (row, col) position
@@ -69,6 +76,21 @@ class PathfindingGreedyAgent(BaseAgent):
                 actions_to_try = [0, 3, 2, 1]  # UP, then horizontal, then DOWN
             else:
                 actions_to_try = [3, 2, 1, 0]  # Horizontal only
+        
+        # Avoid backtracking: Move action that leads to last_pos to the end
+        if self.last_pos is not None and self.last_pos != current_pos:
+            avoid_action = -1
+            for a in range(4):
+                if game.get_next_position(current_pos, a) == self.last_pos:
+                    avoid_action = a
+                    break
+            
+            if avoid_action != -1 and avoid_action in actions_to_try:
+                actions_to_try.remove(avoid_action)
+                actions_to_try.append(avoid_action)
+        
+        # Update last_pos for next step
+        self.last_pos = current_pos
         
         # If at goal, choose randomly (shouldn't happen but safety)
         if dr == 0 and dc == 0:

@@ -135,6 +135,7 @@ class PathfindingVisualizer:
                 print(f"Could not save animation as GIF: {e}")
                 print("Showing animation instead...")
         
+        print("Visualizing episode... Close the plot window to continue.")
         plt.tight_layout()
         plt.show()
         
