@@ -1,0 +1,17 @@
+RockPaperScissors: FP vs RL
+==================================================
+
+Iterations: 10000
+FP final distance to Nash: 0.0152
+RL final distance to Nash: 0.7670
+FP cumulative reward: -213.00
+RL cumulative reward: 213.00
+FP average reward: -0.0213
+RL average reward: 0.0213
+
+Interpretation:
+- FP vs RL in Rock-Paper-Scissors tests if RL can learn the mixed equilibrium.
+- Distances near 0 for both agents mean they both approximate (1/3,1/3,1/3).
+- Average payoff tells you if RL is exploiting or being exploited by FP.
+
+Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png

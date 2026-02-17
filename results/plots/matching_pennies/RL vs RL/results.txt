@@ -1,0 +1,17 @@
+MatchingPennies: RL1 vs RL2
+==================================================
+
+Iterations: 10000
+RL1 final distance to Nash: 0.6642
+RL2 final distance to Nash: 0.6642
+RL1 cumulative reward: -4.00
+RL2 cumulative reward: 4.00
+RL1 average reward: -0.0004
+RL2 average reward: 0.0004
+
+Interpretation:
+- Both players use Q-Learning in Matching Pennies.
+- If both distances to Nash stay large, learning is failing to find the equilibrium.
+- Reward comparison near 0 indicates no systematic exploitation between RL1 and RL2.
+
+Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png, exploitability_heatmap.png

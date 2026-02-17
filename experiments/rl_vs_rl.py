@@ -10,9 +10,11 @@ from games.rps import RockPaperScissors
 from analysis.visualizer import (
     plot_strategy_evolution, plot_distance_to_nash,
     plot_cumulative_reward, plot_comparison_multiple_agents,
-    plot_exploitability_heatmap, ensure_results_dir
+    plot_exploitability_heatmap, get_plot_path, ensure_results_dir,
+    empirical_strategy_history
 )
 import numpy as np
+import os
 
 
 def run_rl_vs_rl_matching_pennies(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42):
@@ -29,36 +31,62 @@ def run_rl_vs_rl_matching_pennies(n_iterations=10000, learning_rate=0.1, epsilon
     results = runner.run(verbose=True)
     runner.print_summary()
     
-    # Generate plots
+    # Generate plots (use empirical action frequency for RL so plot is interpretable)
     ensure_results_dir()
-    
+    base = lambda name: get_plot_path('matching_pennies', 'RL vs RL', name)
+    n_actions = 2  # Matching Pennies
     plot_strategy_evolution(
-        results['agent1_strategy_history'],
-        game, 'RL1', f'results/plots/rl_vs_rl_mp_strategy1_lr{learning_rate}_eps{epsilon}.png'
+        empirical_strategy_history(results['agent1_action_history'], n_actions),
+        game, 'RL1', base('strategy1')
     )
-    
+    plot_strategy_evolution(
+        empirical_strategy_history(results['agent2_action_history'], n_actions),
+        game, 'RL2', base('strategy2')
+    )
     plot_distance_to_nash(
         results['agent1_distance_history'],
-        'RL1', f'results/plots/rl_vs_rl_mp_distance1_lr{learning_rate}_eps{epsilon}.png'
+        'RL1', base('distance1')
     )
-    
+    plot_distance_to_nash(
+        results['agent2_distance_history'],
+        'RL2', base('distance2')
+    )
     plot_comparison_multiple_agents(
         {
             'RL1': results['agent1_distance_history'],
             'RL2': results['agent2_distance_history']
         },
-        'Distance to Nash', f'results/plots/rl_vs_rl_mp_distance_comparison_lr{learning_rate}_eps{epsilon}.png'
+        'Distance to Nash', base('distance_comparison')
     )
-    
     plot_comparison_multiple_agents(
         {
             'RL1': np.cumsum(results['agent1_reward_history']),
             'RL2': np.cumsum(results['agent2_reward_history'])
         },
-        'Cumulative Reward', f'results/plots/rl_vs_rl_mp_reward_comparison_lr{learning_rate}_eps{epsilon}.png'
+        'Cumulative Reward', base('reward_comparison')
     )
-    
-    print("Plots saved to results/plots/")
+
+    # Save textual summary
+    summary = runner.get_summary()
+    results_dir = os.path.dirname(base('strategy1'))
+    results_path = os.path.join(results_dir, 'results.txt')
+    with open(results_path, 'w') as f:
+        f.write(f"{summary['game']}: {summary['agent1_name']} vs {summary['agent2_name']}\n")
+        f.write("=" * 50 + "\n\n")
+        f.write(f"Iterations: {summary['n_iterations']}\n")
+        f.write(f"{summary['agent1_name']} final distance to Nash: {summary['agent1_final_distance']:.4f}\n")
+        f.write(f"{summary['agent2_name']} final distance to Nash: {summary['agent2_final_distance']:.4f}\n")
+        f.write(f"{summary['agent1_name']} cumulative reward: {summary['agent1_cumulative_reward']:.2f}\n")
+        f.write(f"{summary['agent2_name']} cumulative reward: {summary['agent2_cumulative_reward']:.2f}\n")
+        f.write(f"{summary['agent1_name']} average reward: {summary['agent1_avg_reward']:.4f}\n")
+        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n\n")
+        f.write("Interpretation:\n")
+        f.write("- Both players use Q-Learning in Matching Pennies.\n")
+        f.write("- If both distances to Nash stay large, learning is failing to find the equilibrium.\n")
+        f.write("- Reward comparison near 0 indicates no systematic exploitation between RL1 and RL2.\n\n")
+        f.write("Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png, exploitability_heatmap.png\n")
+
+    print("Plots and results.txt saved to results/plots/matching_pennies/(RL vs RL)/")
     return results
 
 
@@ -76,20 +104,62 @@ def run_rl_vs_rl_rps(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42
     results = runner.run(verbose=True)
     runner.print_summary()
     
-    # Generate plots
+    # Generate plots (use empirical action frequency for RL so plot is interpretable)
     ensure_results_dir()
-    
+    base = lambda name: get_plot_path('rock_paper_scissors', 'RL vs RL', name)
+    n_actions = 3  # Rock-Paper-Scissors
     plot_strategy_evolution(
-        results['agent1_strategy_history'],
-        game, 'RL1', f'results/plots/rl_vs_rl_rps_strategy1_lr{learning_rate}_eps{epsilon}.png'
+        empirical_strategy_history(results['agent1_action_history'], n_actions),
+        game, 'RL1', base('strategy1')
     )
-    
+    plot_strategy_evolution(
+        empirical_strategy_history(results['agent2_action_history'], n_actions),
+        game, 'RL2', base('strategy2')
+    )
     plot_distance_to_nash(
         results['agent1_distance_history'],
-        'RL1', f'results/plots/rl_vs_rl_rps_distance1_lr{learning_rate}_eps{epsilon}.png'
+        'RL1', base('distance1')
     )
-    
-    print("Plots saved to results/plots/")
+    plot_distance_to_nash(
+        results['agent2_distance_history'],
+        'RL2', base('distance2')
+    )
+    plot_comparison_multiple_agents(
+        {
+            'RL1': results['agent1_distance_history'],
+            'RL2': results['agent2_distance_history']
+        },
+        'Distance to Nash', base('distance_comparison')
+    )
+    plot_comparison_multiple_agents(
+        {
+            'RL1': np.cumsum(results['agent1_reward_history']),
+            'RL2': np.cumsum(results['agent2_reward_history'])
+        },
+        'Cumulative Reward', base('reward_comparison')
+    )
+
+    # Save textual summary
+    summary = runner.get_summary()
+    results_dir = os.path.dirname(base('strategy1'))
+    results_path = os.path.join(results_dir, 'results.txt')
+    with open(results_path, 'w') as f:
+        f.write(f"{summary['game']}: {summary['agent1_name']} vs {summary['agent2_name']}\n")
+        f.write("=" * 50 + "\n\n")
+        f.write(f"Iterations: {summary['n_iterations']}\n")
+        f.write(f"{summary['agent1_name']} final distance to Nash: {summary['agent1_final_distance']:.4f}\n")
+        f.write(f"{summary['agent2_name']} final distance to Nash: {summary['agent2_final_distance']:.4f}\n")
+        f.write(f"{summary['agent1_name']} cumulative reward: {summary['agent1_cumulative_reward']:.2f}\n")
+        f.write(f"{summary['agent2_name']} cumulative reward: {summary['agent2_cumulative_reward']:.2f}\n")
+        f.write(f"{summary['agent1_name']} average reward: {summary['agent1_avg_reward']:.4f}\n")
+        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n\n")
+        f.write("Interpretation:\n")
+        f.write("- RL vs RL in Rock-Paper-Scissors should ideally converge to the mixed Nash equilibrium.\n")
+        f.write("- Large distances to Nash and strongly positive/negative cumulative rewards indicate cyclic or exploitative dynamics.\n")
+        f.write("- Use the strategy plots to see if the policies stabilize or keep cycling between actions.\n\n")
+        f.write("Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png\n")
+
+    print("Plots and results.txt saved to results/plots/rock_paper_scissors/(RL vs RL)/")
     return results
 
 
@@ -121,12 +191,12 @@ def run_hyperparameter_sweep():
     
     # Plot heatmap
     ensure_results_dir()
+    heatmap_path = get_plot_path('matching_pennies', 'RL vs RL', 'exploitability_heatmap')
     plot_exploitability_heatmap(
         exploitability_results, learning_rates, epsilons,
-        'results/plots/rl_exploitability_heatmap.png'
+        heatmap_path
     )
-    
-    print("Heatmap saved to results/plots/rl_exploitability_heatmap.png")
+    print(f"Heatmap saved to {heatmap_path}")
 
 
 if __name__ == '__main__':

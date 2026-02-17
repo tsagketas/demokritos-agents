@@ -7,12 +7,13 @@ class StochasticQLearningAgent(BaseAgent):
     """
     
     def __init__(self, n_actions, n_states=81, learning_rate=0.1, epsilon=0.1, 
-                 lr_decay=0.99995, epsilon_decay=0.99995, name=None):
+                 lr_decay=0.99995, epsilon_decay=0.99995, discount_factor=0.95, name=None):
         super().__init__(n_actions, name)
         self.learning_rate = learning_rate
         self.epsilon = epsilon
         self.lr_decay = lr_decay
         self.epsilon_decay = epsilon_decay
+        self.gamma = discount_factor
         
         # Q-table: Map state -> array of action values
         # Initialize lazily or fixed size
@@ -24,12 +25,13 @@ class StochasticQLearningAgent(BaseAgent):
     def set_player_id(self, player_id):
         self.player_id = player_id
 
-    def act(self, game=None):
+    def act(self, game=None, state=None):
         # Check current state
-        if hasattr(game, 'get_state'):
-            state = game.get_state()
-        else:
-            state = 0
+        if state is None:
+            if hasattr(game, 'get_state'):
+                state = game.get_state()
+            else:
+                state = 0
         
         self.last_state = state
         
@@ -43,17 +45,22 @@ class StochasticQLearningAgent(BaseAgent):
         best_actions = np.where(q_values == max_q)[0]
         return np.random.choice(best_actions)
     
-    def update(self, action, reward, opponent_action=None):
+    def update(self, action, reward, next_state=None, done=False):
         state = self.last_state
         
         # Q-Learning Update
-        # Q(s,a) = Q(s,a) + alpha * (reward - Q(s,a))
-        # Note: Standard Q-learning adds gamma * max Q(s', a'). 
-        # For simplicity in this zero-sum context, we treat it like independent bandits per state 
-        # or simplified RL. Adding gamma requires knowing next_state in update, which we don't pass.
-        # Given the interface constraints, we stick to Bandit-like update per state.
+        # Q(s,a) = Q(s,a) + alpha * (reward + gamma * max Q(s',a') - Q(s,a))
         
-        self.Q[state][action] += self.learning_rate * (reward - self.Q[state][action])
+        if next_state is None:
+            # Fallback for stateless/unknown next state
+            target = reward
+        else:
+            if done:
+                target = reward
+            else:
+                target = reward + self.gamma * np.max(self.Q[next_state])
+        
+        self.Q[state][action] += self.learning_rate * (target - self.Q[state][action])
         
         # Decay
         self.epsilon *= self.epsilon_decay

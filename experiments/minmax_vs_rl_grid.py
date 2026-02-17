@@ -1,57 +1,36 @@
-from experiments.runner import ExperimentRunner
+"""
+MinMax (Hunter) vs RL (Prey) on turn-based Grid Game.
+Two runs: Hunter first, Prey first.
+"""
 from games.grid_game import GridGame
+from agents.minimax import MinimaxAgent
 from agents.stochastic_q_learning import StochasticQLearningAgent
 from analysis.visualizer import ensure_results_dir
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import os
+from tqdm import tqdm
 
-# Output base: results/plots/grid_game/
 GRID_PLOTS_BASE = os.path.join('results', 'plots', 'grid_game')
 
 
-def plot_capture_heatmap(capture_locations, size=3, filename='grid_capture_heatmap.png'):
-    """Plot heatmap of where captures occurred."""
-    grid = np.zeros((size, size))
-    for r, c in capture_locations:
-        grid[r, c] += 1
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(grid, annot=True, fmt='g', cmap='Reds')
-    plt.title(f'Capture Heatmap ({len(capture_locations)} captures)')
-    plt.xlabel('Column')
-    plt.ylabel('Row')
-    plt.savefig(filename)
-    plt.close()
-
-
-def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL vs RL', seed=42):
+def run_minmax_vs_rl(n_iterations=200000, first_player=0, output_subdir='MinMax vs RL', depth=4):
     """
-    Run one Grid Game experiment (RL vs RL).
-    first_player: 0 = Hunter starts, 1 = Prey starts.
-    output_subdir: e.g. 'RL vs RL - Hunter first' -> results/plots/grid_game/RL vs RL - Hunter first/
+    Hunter = MinMax, Prey = RL.
+    first_player: 0 = Hunter first, 1 = Prey first.
     """
     out_dir = os.path.join(GRID_PLOTS_BASE, output_subdir)
     os.makedirs(out_dir, exist_ok=True)
 
     label = "Hunter first" if first_player == 0 else "Prey first"
     print("=" * 60)
-    print(f"Grid Game (Hunter vs Prey) - Turn-Based 3x3, max_steps=20, {label}")
+    print(f"Grid Game: MinMax (Hunter) vs RL (Prey), max_steps=20, {label}")
     print("=" * 60)
 
     game = GridGame(size=3, max_steps=20, first_player=first_player)
     n_states = 81
 
-    hunter = StochasticQLearningAgent(
-        n_actions=5,
-        n_states=n_states,
-        learning_rate=0.1,
-        epsilon=0.5,
-        lr_decay=0.99999,
-        epsilon_decay=0.99998,
-        discount_factor=0.99,
-        name="Hunter"
-    )
+    hunter = MinimaxAgent(n_actions=5, depth=depth, name="Hunter")
     prey = StochasticQLearningAgent(
         n_actions=5,
         n_states=n_states,
@@ -67,12 +46,10 @@ def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL v
 
     captures = []
     rewards_hunter = []
-    # Per-step rewards (0 when other player moved) for same-length cumulative plot
     step_rewards_hunter = []
     step_rewards_prey = []
     n_episodes = 0
 
-    from tqdm import tqdm
     game.reset()
 
     for i in tqdm(range(n_iterations), desc=output_subdir):
@@ -80,10 +57,10 @@ def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL v
         current = game.get_current_player()
 
         if current == 0:
-            action = hunter.act(game, state=s_idx)
+            action = hunter.act(game)
             reward, done, _ = game.step(action)
             next_s = game.get_state()
-            hunter.update(action, reward, next_state=next_s, done=done)
+            hunter.update(action, reward)
             rewards_hunter.append(reward)
             step_rewards_hunter.append(reward)
             step_rewards_prey.append(0)
@@ -108,11 +85,11 @@ def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL v
 
     ensure_results_dir()
 
-    # Txt summary in same folder as plots
     results_txt = os.path.join(out_dir, 'results.txt')
     with open(results_txt, 'w', encoding='utf-8') as f:
-        f.write(f"Grid Game (Hunter vs Prey) - Turn-Based 3x3, max_steps=20\n")
+        f.write("Grid Game: MinMax (Hunter) vs RL (Prey), max_steps=20\n")
         f.write(f"First player: {'Hunter' if first_player == 0 else 'Prey'}\n")
+        f.write(f"MinMax depth: {depth}\n")
         f.write("=" * 50 + "\n\n")
         f.write(f"Iterations (turns):     {n_iterations}\n")
         f.write(f"Episodes (games):       {n_episodes}\n")
@@ -122,22 +99,19 @@ def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL v
         f.write(f"Capture rate:           {capture_rate:.1f}%\n")
         f.write(f"Hunter total reward:    {total_reward_hunter:.2f}\n")
         f.write(f"Hunter mean reward:     {mean_reward_hunter:.4f}\n")
-        f.write(f"Hunter final epsilon:   {hunter.epsilon:.6f}\n")
         f.write(f"Prey final epsilon:     {prey.epsilon:.6f}\n\n")
         f.write("Interpretation:\n")
-        f.write("- Slope of cumulative reward > 0 means Hunter is winning on average.\n")
-        f.write("- More captures = Hunter catching Prey more often.\n")
-        f.write("- Mean reward > 0: Hunter doing better; < 0: Prey escaping / timeout more.\n")
-        f.write(f"\nPlots in this folder: cumulative_reward.png, avg_reward.png\n")
+        f.write("- Hunter = MinMax (optimal), Prey = RL (learning).\n")
+        f.write("- High capture rate = MinMax Hunter dominates; RL Prey learns to escape over time if rate drops.\n")
+        f.write(f"\nPlots: cumulative_reward.png, avg_reward.png\n")
     print(f"Results summary: {results_txt}")
 
-    # Plots in same folder: cumulative Hunter + Prey on same graph
     cum_h = np.cumsum(step_rewards_hunter)
     cum_p = np.cumsum(step_rewards_prey)
     plt.figure(figsize=(10, 6))
-    plt.plot(cum_h, label='Hunter (cumulative)', color='C0')
-    plt.plot(cum_p, label='Prey (cumulative)', color='red')
-    plt.title(f'Cumulative Reward ({label})')
+    plt.plot(cum_h, label='Hunter MinMax (cumulative)', color='C0')
+    plt.plot(cum_p, label='Prey RL (cumulative)', color='red')
+    plt.title(f'MinMax vs RL - Cumulative Reward ({label})')
     plt.xlabel('Turns')
     plt.ylabel('Total Reward')
     plt.legend()
@@ -146,30 +120,33 @@ def run_grid_experiment(n_iterations=200000, first_player=0, output_subdir='RL v
     plt.close()
 
     window = 1000
-    avg_rewards = np.convolve(rewards_hunter, np.ones(window) / window, mode='valid')
-    plt.figure(figsize=(10, 6))
-    plt.plot(avg_rewards, label='Hunter Avg Reward (1k window)')
-    plt.axhline(y=0, color='r', linestyle='--', label='Even Game')
-    plt.title(f'Hunter Average Reward over Time ({label})')
-    plt.xlabel('Iterations')
-    plt.ylabel('Avg Reward per Step')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig(os.path.join(out_dir, 'avg_reward.png'))
-    plt.close()
+    if len(rewards_hunter) >= window:
+        avg_rewards = np.convolve(rewards_hunter, np.ones(window) / window, mode='valid')
+        plt.figure(figsize=(10, 6))
+        plt.plot(avg_rewards, label='Hunter Avg Reward (1k window)')
+        plt.axhline(y=0, color='r', linestyle='--', label='Even Game')
+        plt.title(f'MinMax vs RL - Hunter Avg Reward ({label})')
+        plt.xlabel('Hunter turns')
+        plt.ylabel('Avg Reward per Step')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(os.path.join(out_dir, 'avg_reward.png'))
+        plt.close()
 
     print(f"Plots and results saved in: {out_dir}\n")
     return out_dir
 
 
 if __name__ == '__main__':
-    run_grid_experiment(
+    run_minmax_vs_rl(
         n_iterations=200000,
         first_player=0,
-        output_subdir='RL vs RL - Hunter first'
+        output_subdir='MinMax vs RL - Hunter first',
+        depth=6
     )
-    run_grid_experiment(
+    run_minmax_vs_rl(
         n_iterations=200000,
         first_player=1,
-        output_subdir='RL vs RL - Prey first'
+        output_subdir='MinMax vs RL - Prey first',
+        depth=6
     )

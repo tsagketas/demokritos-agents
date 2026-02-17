@@ -1,0 +1,17 @@
+MatchingPennies: FP vs RL
+==================================================
+
+Iterations: 10000
+FP final distance to Nash: 0.0000
+RL final distance to Nash: 0.6642
+FP cumulative reward: -374.00
+RL cumulative reward: 374.00
+FP average reward: -0.0374
+RL average reward: 0.0374
+
+Interpretation:
+- FP plays best response to empirical frequencies; RL learns Q-values.
+- If RL distance to Nash stays large while FP is near 0, RL has not learned the equilibrium.
+- Positive cumulative reward for RL means it is exploiting FP in Matching Pennies.
+
+Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png
