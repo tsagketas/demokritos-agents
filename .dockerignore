@@ -39,11 +39,11 @@ wheels/
 .ipynb_checkpoints
 *.ipynb
 
-# Results (will be mounted as volume)
-results/plots/*
-results/data/*
-!results/plots/.gitkeep
-!results/data/.gitkeep
+# # Results (will be mounted as volume)
+# results/plots/*
+# results/data/*
+# !results/plots/.gitkeep
+# !results/data/.gitkeep
 
 # Documentation
 *.md

@@ -1,29 +1,32 @@
 import numpy as np
-from .base_game import BaseGame
 
 
 def _manhattan(hunter_pos, prey_pos):
     return abs(hunter_pos[0] - prey_pos[0]) + abs(hunter_pos[1] - prey_pos[1])
 
 
-class GridGame(BaseGame):
+class GridGame:
     """
-    Turn-based Grid Game (Hunter vs Prey) on a 3x3 board.
-    
+    Turn-based stochastic Grid Game (Hunter vs Prey) on an N×N board.
+
+    This is a sequential, stateful game (not a normal-form matrix game),
+    so it does NOT inherit from BaseGame and does not define a Nash
+    equilibrium in the same sense as MatchingPennies/RPS.
+
     Turn order: Hunter (player 0) → Prey (player 1) → Hunter → ...
     Perfect information. One player moves per step.
-    
-    State: (hunter_row, hunter_col, prey_row, prey_col) → flattened 0..80
+
+    State: (hunter_row, hunter_col, prey_row, prey_col) → flattened 0..(size^4 - 1)
     Actions: 0:Up, 1:Right, 2:Down, 3:Left, 4:Stay
-    
+
     Rewards:
     - Capture (Hunter lands on Prey): +10 Hunter, -10 Prey
     - Timeout: -10 Hunter, +10 Prey
-    - Non-terminal: distance-based shaping (delta_dist - 0.1 for Hunter, -delta_dist + 0.1 for Prey)
+    - Non-terminal: distance-based shaping (delta_dist - 0.1 for Hunter,
+      -delta_dist + 0.1 for Prey)
     """
-    
+
     def __init__(self, size=3, max_steps=20, first_player=0):
-        super().__init__([[0]])
         self.size = size
         self.max_steps = max_steps
         self.first_player = first_player  # 0 = Hunter first, 1 = Prey first
@@ -39,7 +42,6 @@ class GridGame(BaseGame):
             3: (0, -1),  # Left
             4: (0, 0),   # Stay
         }
-
     def get_state(self):
         """State index 0..80 for 3x3: h_r*27 + h_c*9 + p_r*3 + p_c."""
         h_r, h_c = self.hunter_pos
@@ -127,10 +129,7 @@ class GridGame(BaseGame):
         # Non-terminal: Hunter prefers lower distance, Prey higher
         if player_id == 0:
             return -dist  # Hunter maximizes → closer is better
-        return dist     # Prey maximizes → farther is better
-
-    def get_nash_equilibrium(self):
-        return np.ones(self.n_actions) / self.n_actions
+        return dist      # Prey maximizes → farther is better
 
     def get_action_name(self, action):
         return ["Up", "Right", "Down", "Left", "Stay"][action]
