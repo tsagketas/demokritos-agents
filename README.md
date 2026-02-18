@@ -30,6 +30,11 @@ Learning equilibria in repeated zero-sum games.
    docker-compose run --rm game-learning bash
    ```
 
+5. **Generate Hunter–Prey GIFs** (saves to `results/plots/hunter_prey_early.gif`, `hunter_prey_best.gif`):
+   ```bash
+   docker-compose run --rm game-learning python -m analysis.gif_maker
+   ```
+
 ### Development Mode
 
 The `docker-compose.yml` is configured with volume mounts, so your code changes are reflected immediately:
@@ -96,5 +101,8 @@ docker-compose run --rm game-learning python -m experiments.rl_vs_rl
 
 # FP vs RL
 docker-compose run --rm game-learning python -m experiments.fp_vs_rl
+
+# Hunter–Prey GIFs (animations in results/plots/)
+docker-compose run --rm game-learning python -m analysis.gif_maker
 ```
 

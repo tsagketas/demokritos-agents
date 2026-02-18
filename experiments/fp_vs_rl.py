@@ -14,7 +14,7 @@ from analysis.visualizer import (
     plot_average_payoff_comparison, get_plot_path, ensure_results_dir,
     empirical_strategy_history
 )
-from analysis.metrics import average_payoff
+from analysis.metrics import average_payoff, external_regret, external_regret_history
 import numpy as np
 import os
 
@@ -65,6 +65,25 @@ def run_fp_vs_rl_matching_pennies(n_iterations=10000, learning_rate=0.1, epsilon
     }
     plot_average_payoff_comparison(avg_payoffs, base('avg_payoff'))
 
+    # External regret (no-regret / Hannan consistency)
+    fp_regret_history = external_regret_history(
+        results['agent1_action_history'], results['agent2_action_history'], game, player_id=0
+    )
+    rl_regret_history = external_regret_history(
+        results['agent2_action_history'], results['agent1_action_history'], game, player_id=1
+    )
+    plot_comparison_multiple_agents(
+        {'FP': fp_regret_history, 'RL': rl_regret_history},
+        'Cumulative External Regret',
+        base('external_regret')
+    )
+    fp_final_regret = external_regret(
+        results['agent1_action_history'], results['agent2_action_history'], game, player_id=0
+    )
+    rl_final_regret = external_regret(
+        results['agent2_action_history'], results['agent1_action_history'], game, player_id=1
+    )
+
     # Save textual summary
     summary = runner.get_summary()
     results_dir = os.path.dirname(base('strategy_fp'))
@@ -78,12 +97,15 @@ def run_fp_vs_rl_matching_pennies(n_iterations=10000, learning_rate=0.1, epsilon
         f.write(f"{summary['agent1_name']} cumulative reward: {summary['agent1_cumulative_reward']:.2f}\n")
         f.write(f"{summary['agent2_name']} cumulative reward: {summary['agent2_cumulative_reward']:.2f}\n")
         f.write(f"{summary['agent1_name']} average reward: {summary['agent1_avg_reward']:.4f}\n")
-        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n\n")
+        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n")
+        f.write(f"{summary['agent1_name']} final external regret: {fp_final_regret:.2f}\n")
+        f.write(f"{summary['agent2_name']} final external regret: {rl_final_regret:.2f}\n\n")
         f.write("Interpretation:\n")
         f.write("- FP plays best response to empirical frequencies; RL learns Q-values.\n")
         f.write("- If RL distance to Nash stays large while FP is near 0, RL has not learned the equilibrium.\n")
-        f.write("- Positive cumulative reward for RL means it is exploiting FP in Matching Pennies.\n\n")
-        f.write("Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png\n")
+        f.write("- Positive cumulative reward for RL means it is exploiting FP in Matching Pennies.\n")
+        f.write("- External regret: gain vs best fixed action in hindsight; low/stable regret = no-regret (Hannan consistent).\n\n")
+        f.write("Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png, external_regret.png\n")
 
     print("Plots and results.txt saved to results/plots/matching_pennies/(FP vs RL)/")
     return results
@@ -136,6 +158,25 @@ def run_fp_vs_rl_rps(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42
     }
     plot_average_payoff_comparison(avg_payoffs, base('avg_payoff'))
 
+    # External regret (no-regret / Hannan consistency)
+    fp_regret_history = external_regret_history(
+        results['agent1_action_history'], results['agent2_action_history'], game, player_id=0
+    )
+    rl_regret_history = external_regret_history(
+        results['agent2_action_history'], results['agent1_action_history'], game, player_id=1
+    )
+    plot_comparison_multiple_agents(
+        {'FP': fp_regret_history, 'RL': rl_regret_history},
+        'Cumulative External Regret',
+        base('external_regret')
+    )
+    fp_final_regret = external_regret(
+        results['agent1_action_history'], results['agent2_action_history'], game, player_id=0
+    )
+    rl_final_regret = external_regret(
+        results['agent2_action_history'], results['agent1_action_history'], game, player_id=1
+    )
+
     # Save textual summary
     summary = runner.get_summary()
     results_dir = os.path.dirname(base('strategy_fp'))
@@ -149,12 +190,15 @@ def run_fp_vs_rl_rps(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42
         f.write(f"{summary['agent1_name']} cumulative reward: {summary['agent1_cumulative_reward']:.2f}\n")
         f.write(f"{summary['agent2_name']} cumulative reward: {summary['agent2_cumulative_reward']:.2f}\n")
         f.write(f"{summary['agent1_name']} average reward: {summary['agent1_avg_reward']:.4f}\n")
-        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n\n")
+        f.write(f"{summary['agent2_name']} average reward: {summary['agent2_avg_reward']:.4f}\n")
+        f.write(f"{summary['agent1_name']} final external regret: {fp_final_regret:.2f}\n")
+        f.write(f"{summary['agent2_name']} final external regret: {rl_final_regret:.2f}\n\n")
         f.write("Interpretation:\n")
         f.write("- FP vs RL in Rock-Paper-Scissors tests if RL can learn the mixed equilibrium.\n")
         f.write("- Distances near 0 for both agents mean they both approximate (1/3,1/3,1/3).\n")
-        f.write("- Average payoff tells you if RL is exploiting or being exploited by FP.\n\n")
-        f.write("Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png\n")
+        f.write("- Average payoff tells you if RL is exploiting or being exploited by FP.\n")
+        f.write("- External regret: gain vs best fixed action in hindsight; low/stable regret = no-regret (Hannan consistent).\n\n")
+        f.write("Plots: strategy_fp.png, strategy_rl.png, distance_comparison.png, reward_comparison.png, avg_payoff.png, external_regret.png\n")
 
     print("Plots and results.txt saved to results/plots/rock_paper_scissors/(FP vs RL)/")
     return results

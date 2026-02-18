@@ -11,47 +11,54 @@ sys.path.append(os.getcwd())
 from games.grid_game import GridGame
 from agents.stochastic_q_learning import StochasticQLearningAgent
 
-# --- CONFIGURATION ---
-GRID_SIZE = 5
-N_STATES = GRID_SIZE ** 4
-TRAIN_ITERATIONS = 200000 
-MAX_STEPS_EPISODE = 30 # Aligned with Game 
-# ---------------------
+# --- CONFIGURATION (aligned with rest of project: 3x3 grid, 81 states) ---
+GRID_SIZE = 3
+N_STATES = GRID_SIZE ** 4  # 81
+TRAIN_ITERATIONS = 200000
+MAX_STEPS_EPISODE = 20  # same as GridGame default max_steps
+# -------------------------------------------------------------------------
 
 def run_episode(game, hunter, prey, hunter_eps=None, prey_eps=None):
+    """Run one episode: turn-based (Hunter then Prey). GridGame.step(action) returns (reward, done, next_player)."""
     game.reset()
-    
     hunter_path = [game.hunter_pos.copy()]
     prey_path = [game.prey_pos.copy()]
-    
+
     old_eps_h = hunter.epsilon
     old_eps_p = prey.epsilon
-    
-    if hunter_eps is not None: hunter.epsilon = hunter_eps
-    if prey_eps is not None: prey.epsilon = prey_eps
+    if hunter_eps is not None:
+        hunter.epsilon = hunter_eps
+    if prey_eps is not None:
+        prey.epsilon = prey_eps
 
-    max_steps = MAX_STEPS_EPISODE
     caught = False
-    
-    # We use manual loop limit as fallback, but rely on game.step done flag
-    for _ in range(max_steps + 5):
+    max_turns = MAX_STEPS_EPISODE * 2  # each "step" in game is one player move
+    for _ in range(max_turns):
+        current = game.get_current_player()
         s_idx = game.get_state()
-        action_h = hunter.act(game, state=s_idx) 
-        action_p = prey.act(game, state=s_idx) 
+        if current == 0:
+            action = hunter.act(game, state=s_idx)
+        else:
+            action = prey.act(game, state=s_idx)
 
-        reward_h, reward_p, done = game.step(action_h, action_p)
-        
+        reward, done, _ = game.step(action)
         hunter_path.append(game.hunter_pos.copy())
         prey_path.append(game.prey_pos.copy())
-        
-        if done:
-            if reward_h == 10: # Capture code
+
+        if current == 0:
+            next_s = game.get_state()
+            hunter.update(action, reward, next_state=next_s, done=done)
+            if done and reward == 10:
                 caught = True
+        else:
+            next_s = game.get_state()
+            prey.update(action, reward, next_state=next_s, done=done)
+
+        if done:
             break
-            
+
     hunter.epsilon = old_eps_h
     prey.epsilon = old_eps_p
-            
     return hunter_path, prey_path, caught
 
 def run_dynamic_random_episode(game, hunter, prey):
@@ -89,6 +96,37 @@ def find_best_episode(game, hunter, prey, trials=50):
                 best_run = (h_path, p_path, caught)
     
     # If no capture found, return the last one
+    if best_run:
+        return best_run[0], best_run[1], best_run[2], best_steps
+    else:
+        return h_path, p_path, caught, len(h_path)-1
+
+def find_prey_escape_episode(game, hunter, prey, trials=50):
+    """Finds an episode where the prey escapes (not caught)."""
+    best_steps = 0
+    best_run = None
+    
+    for _ in range(trials):
+        # Hunter Smart (0.0), Prey Smart (0.0) - both trained
+        h_path, p_path, caught = run_episode(game, hunter, prey, hunter_eps=0.0, prey_eps=0.0)
+        
+        if not caught:  # Prey escaped
+            steps = len(h_path) - 1
+            if steps > best_steps:  # Longer escape = more interesting
+                best_steps = steps
+                best_run = (h_path, p_path, caught)
+    
+    # If no escape found, try with prey smart and hunter random
+    if not best_run:
+        for _ in range(trials):
+            h_path, p_path, caught = run_episode(game, hunter, prey, hunter_eps=1.0, prey_eps=0.0)
+            if not caught:
+                steps = len(h_path) - 1
+                if steps > best_steps:
+                    best_steps = steps
+                    best_run = (h_path, p_path, caught)
+    
+    # If still no escape found, return the last one
     if best_run:
         return best_run[0], best_run[1], best_run[2], best_steps
     else:
@@ -133,10 +171,13 @@ def create_fancy_gif(hunter_path, prey_path, caught, filename, title):
 
     frames = len(hunter_path)
     if caught: frames += 4
+    elif not caught: frames += 4  # Also pause on escape
         
     def frame_gen():
         for i in range(len(hunter_path)): yield i
         if caught:
+            for _ in range(4): yield len(hunter_path) - 1
+        elif not caught:
             for _ in range(4): yield len(hunter_path) - 1
 
     ani = animation.FuncAnimation(fig, update, frames=frame_gen, interval=600, save_count=frames)
@@ -146,8 +187,8 @@ def create_fancy_gif(hunter_path, prey_path, caught, filename, title):
     gc.collect()
 
 def main():
-    print(f"Initializing 5x5 Agents (States: {N_STATES})...")
-    game = GridGame(size=GRID_SIZE)
+    print(f"Initializing {GRID_SIZE}x{GRID_SIZE} Grid (States: {N_STATES})...")
+    game = GridGame(size=GRID_SIZE, max_steps=MAX_STEPS_EPISODE)
     
     hunter = StochasticQLearningAgent(game.n_actions, n_states=N_STATES, name="Hunter", epsilon=0.9, learning_rate=0.2, discount_factor=0.99)
     prey = StochasticQLearningAgent(game.n_actions, n_states=N_STATES, name="Prey", epsilon=0.9, learning_rate=0.2, discount_factor=0.99)
@@ -159,18 +200,19 @@ def main():
     print(f"Training ({TRAIN_ITERATIONS} iters)...")
     game.reset()
     for i in range(TRAIN_ITERATIONS):
+        current = game.get_current_player()
         s_idx = game.get_state()
-        ah = hunter.act(game, state=s_idx)
-        ap = prey.act(game, state=s_idx)
-        
-        rh, rp, done = game.step(ah, ap)
-        
+        if current == 0:
+            action = hunter.act(game, state=s_idx)
+        else:
+            action = prey.act(game, state=s_idx)
+        reward, done, _ = game.step(action)
         next_s_idx = game.get_state()
-        
-        hunter.update(ah, rh, next_state=next_s_idx, done=done)
-        prey.update(ap, rp, next_state=next_s_idx, done=done)
-        
-        if done: 
+        if current == 0:
+            hunter.update(action, reward, next_state=next_s_idx, done=done)
+        else:
+            prey.update(action, reward, next_state=next_s_idx, done=done)
+        if done:
             game.reset()
 
     print("Searching for Best Episode (50 trials)...")
@@ -181,6 +223,15 @@ def main():
     print(f"Found Best Run: {steps} steps ({status})")
     
     create_fancy_gif(h_path, p_path, caught, "results/plots/hunter_prey_best.gif", title)
+
+    print("Searching for Prey Escape Episode (50 trials)...")
+    h_path, p_path, caught, steps = find_prey_escape_episode(game, hunter, prey, trials=50)
+    
+    status = "Escaped" if not caught else "Captured"
+    title = f"Prey Escape: {steps} Steps ({status})"
+    print(f"Found Escape Episode: {steps} steps ({status})")
+    
+    create_fancy_gif(h_path, p_path, caught, "results/plots/hunter_prey_escape.gif", title)
 
 if __name__ == "__main__":
     os.makedirs("results/plots", exist_ok=True)

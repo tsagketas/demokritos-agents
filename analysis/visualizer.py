@@ -270,4 +270,6 @@ def ensure_results_dir():
     """Ensure results directories exist (flat and nested structure)."""
     os.makedirs('results/plots', exist_ok=True)
     os.makedirs('results/data', exist_ok=True)
+    results_abs = os.path.abspath('results')
+    print(f"[Results directory: {results_abs}]")
 

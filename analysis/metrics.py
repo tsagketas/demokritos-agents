@@ -127,6 +127,41 @@ def external_regret(agent_history, opponent_history, game, player_id):
     return best_fixed_reward - actual_reward
 
 
+def external_regret_history(agent_history, opponent_history, game, player_id):
+    """
+    Cumulative external regret at each time step (for plotting).
+    regret_t = best fixed action payoff up to t - actual reward up to t.
+    
+    Args:
+        agent_history: List of actions taken by agent
+        opponent_history: List of actions taken by opponent
+        game: Game object
+        player_id: 0 (Row) or 1 (Col)
+        
+    Returns:
+        List of cumulative external regrets, length = len(agent_history)
+    """
+    n = len(agent_history)
+    if n == 0 or len(opponent_history) != n:
+        return []
+    n_actions = game.n_actions
+    cumulative_payoffs_per_action = np.zeros(n_actions)
+    actual_cumulative = 0
+    history = []
+    for t in range(n):
+        my_action = agent_history[t]
+        opp_action = opponent_history[t]
+        if player_id == 0:
+            actual_cumulative += game.payoff_matrix[my_action, opp_action]
+            cumulative_payoffs_per_action += game.payoff_matrix[:, opp_action]
+        else:
+            actual_cumulative += -game.payoff_matrix[opp_action, my_action]
+            cumulative_payoffs_per_action += -game.payoff_matrix[opp_action, :]
+        best_fixed = np.max(cumulative_payoffs_per_action)
+        history.append(best_fixed - actual_cumulative)
+    return history
+
+
 def strategy_variance(strategy_history):
     """
     Calculate variance in mixed strategy over time.
