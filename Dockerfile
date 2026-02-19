@@ -22,6 +22,9 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Playwright: install Chromium for html_to_pdf
+RUN python -m playwright install chromium --with-deps
+
 # Copy project files
 COPY . .
 

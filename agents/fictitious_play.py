@@ -15,6 +15,7 @@ class FictitiousPlayAgent(BaseAgent):
         """
         super().__init__(n_actions, name)
         self.opponent_history = []
+        self.action_counts = np.zeros(n_actions) # Count of each action played by opponent
         self.belief = np.ones(n_actions) / n_actions  # Uniform initial belief
     
     def act(self, game=None):
@@ -30,7 +31,7 @@ class FictitiousPlayAgent(BaseAgent):
         if game is None:
             raise ValueError("Game object required for Fictitious Play")
         
-        return game.best_response(self.belief)
+        return game.best_response(self.belief, self.player_id)
     
     def update(self, action, reward, opponent_action=None):
         """
@@ -48,19 +49,14 @@ class FictitiousPlayAgent(BaseAgent):
         self.action_history.append(action)
         self.reward_history.append(reward)
         
-        # Update belief: empirical distribution of opponent's actions
-        self._update_belief()
+        # Incremental update: O(1)
+        self.action_counts[opponent_action] += 1
+        total_actions = len(self.opponent_history)
+        self.belief = self.action_counts / total_actions
     
     def _update_belief(self):
-        """Compute empirical distribution from opponent history."""
-        if len(self.opponent_history) == 0:
-            self.belief = np.ones(self.n_actions) / self.n_actions
-            return
-        
-        self.belief = np.zeros(self.n_actions)
-        for action in self.opponent_history:
-            self.belief[action] += 1
-        self.belief = self.belief / len(self.opponent_history)
+        """Deprecated: Internal method for belief update (now handled incrementally)."""
+        pass
     
     def get_belief(self):
         """Get current belief about opponent's strategy."""
@@ -70,5 +66,6 @@ class FictitiousPlayAgent(BaseAgent):
         """Reset agent state."""
         super().reset()
         self.opponent_history = []
+        self.action_counts = np.zeros(self.n_actions)
         self.belief = np.ones(self.n_actions) / self.n_actions
 

@@ -38,17 +38,30 @@ class BaseGame(ABC):
         """Return list of available actions."""
         return list(range(self.n_actions))
     
-    def best_response(self, opponent_strategy):
+    def best_response(self, opponent_strategy, player_id=0):
         """
         Compute best response to opponent's mixed strategy.
         
         Args:
             opponent_strategy: Probability distribution over opponent's actions
+            player_id: 0 for Row Player (maximize), 1 for Column Player (minimize)
             
         Returns:
             Best response action (pure strategy)
         """
         opponent_strategy = np.array(opponent_strategy)
-        expected_payoffs = self.payoff_matrix @ opponent_strategy
-        return np.argmax(expected_payoffs)
+        
+        if player_id == 0:
+            # Row Player (P1) maximizes: M @ y
+            expected_payoffs = self.payoff_matrix @ opponent_strategy
+            return np.argmax(expected_payoffs)
+        else:
+            # Column Player (P2) minimizes: x.T @ M
+            # Or maximizes: x.T @ (-M) -> (-M).T @ x -> -M.T @ x
+            # Here opponent_strategy is x (Row Player's strategy)
+            # Payoff matrix for Col Player is -PayoffMatrix (zero-sum)
+            # We want argmax( - (x @ M) ) which is argmin( x @ M )
+            # Transpose for calculation: (x.T @ M).T = M.T @ x
+            expected_payoffs = self.payoff_matrix.T @ opponent_strategy
+            return np.argmin(expected_payoffs)
 

@@ -1,0 +1,20 @@
+Grid Game (Hunter vs Prey) - Turn-Based 3x3, max_steps=20
+First player: Prey
+==================================================
+
+Iterations (turns):     200000
+Episodes (games):       17656
+Hunter turns:           100000
+Captures (Hunter wins): 15119
+Capture rate:           85.6%
+Hunter total reward:    177072.60
+Hunter mean reward:     1.7707
+Hunter final epsilon:   0.067666
+Prey final epsilon:     0.067666
+
+Interpretation:
+- Slope of cumulative reward > 0 means Hunter is winning on average.
+- More captures = Hunter catching Prey more often.
+- Mean reward > 0: Hunter doing better; < 0: Prey escaping / timeout more.
+
+Plots in this folder: cumulative_reward.png, avg_reward.png

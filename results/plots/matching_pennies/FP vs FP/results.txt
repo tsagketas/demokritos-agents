@@ -1,0 +1,17 @@
+MatchingPennies: FP1 vs FP2
+==================================================
+
+Iterations: 10000
+FP1 final distance to Nash: 0.0007
+FP2 final distance to Nash: 0.0092
+FP1 cumulative reward: 60.00
+FP2 cumulative reward: -60.00
+FP1 average reward: 0.0060
+FP2 average reward: -0.0060
+
+Interpretation:
+- Both agents use Fictitious Play in Matching Pennies.
+- Distances close to 0 mean strategies are near the mixed Nash equilibrium (50-50 heads/tails).
+- Reward comparison shows whether either FP agent systematically exploits the other.
+
+Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png

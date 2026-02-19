@@ -11,6 +11,16 @@ plt.rcParams['figure.figsize'] = (10, 6)
 plt.rcParams['font.size'] = 12
 
 
+def get_plot_path(game_name, agent_combo, plot_name):
+    """
+    Return path for a plot in the organized structure: results/plots/{game}/({agent_combo})/{plot_name}.png
+    Creates the directory if it does not exist.
+    """
+    dir_path = os.path.join('results', 'plots', game_name, agent_combo)
+    os.makedirs(dir_path, exist_ok=True)
+    return os.path.join(dir_path, f'{plot_name}.png')
+
+
 def plot_strategy_evolution(strategy_history, game, agent_name, save_path=None):
     """
     Plot strategy evolution over time.
@@ -241,8 +251,25 @@ def plot_comparison_multiple_agents(metric_history_dict, metric_name, save_path=
     plt.close()
 
 
+def empirical_strategy_history(action_history, n_actions):
+    """
+    Compute empirical (running) strategy from action history.
+    At each step t, returns the distribution of actions played so far.
+    Makes strategy evolution plots meaningful for RL agents (instead of
+    plotting epsilon-greedy policy which jumps every step).
+    """
+    strategies = []
+    counts = np.zeros(n_actions)
+    for a in action_history:
+        counts[a] += 1
+        strategies.append((counts / counts.sum()).copy())
+    return strategies
+
+
 def ensure_results_dir():
-    """Ensure results directories exist."""
+    """Ensure results directories exist (flat and nested structure)."""
     os.makedirs('results/plots', exist_ok=True)
     os.makedirs('results/data', exist_ok=True)
+    results_abs = os.path.abspath('results')
+    print(f"[Results directory: {results_abs}]")
 

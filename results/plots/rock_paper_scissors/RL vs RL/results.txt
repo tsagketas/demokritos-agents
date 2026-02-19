@@ -1,0 +1,17 @@
+RockPaperScissors: RL1 vs RL2
+==================================================
+
+Iterations: 10000
+RL1 final distance to Nash: 0.7670
+RL2 final distance to Nash: 0.7670
+RL1 cumulative reward: 212.00
+RL2 cumulative reward: -212.00
+RL1 average reward: 0.0212
+RL2 average reward: -0.0212
+
+Interpretation:
+- RL vs RL in Rock-Paper-Scissors should ideally converge to the mixed Nash equilibrium.
+- Large distances to Nash and strongly positive/negative cumulative rewards indicate cyclic or exploitative dynamics.
+- Use the strategy plots to see if the policies stabilize or keep cycling between actions.
+
+Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png, exploitability_heatmap.png

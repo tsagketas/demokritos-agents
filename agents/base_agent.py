@@ -15,9 +15,14 @@ class BaseAgent(ABC):
         """
         self.n_actions = n_actions
         self.name = name or self.__class__.__name__
+        self.player_id = 0  # 0 for Row Player, 1 for Column Player
         self.action_history = []
         self.reward_history = []
     
+    def set_player_id(self, player_id):
+        """Set player role (0 for Row, 1 for Column)."""
+        self.player_id = player_id
+
     @abstractmethod
     def act(self, game=None):
         """

@@ -1,0 +1,19 @@
+Grid Game: MinMax (Hunter) vs RL (Prey), max_steps=20
+First player: Prey
+MinMax depth: 4
+==================================================
+
+Iterations (turns):     200000
+Episodes (games):       10282
+Hunter turns:           100000
+Captures (Hunter wins): 682
+Capture rate:           6.6%
+Hunter total reward:    -87868.80
+Hunter mean reward:     -0.8787
+Prey final epsilon:     0.067666
+
+Interpretation:
+- Hunter = MinMax (optimal), Prey = RL (learning).
+- High capture rate = MinMax Hunter dominates; RL Prey learns to escape over time if rate drops.
+
+Plots: cumulative_reward.png, avg_reward.png

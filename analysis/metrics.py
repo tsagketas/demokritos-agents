@@ -17,30 +17,38 @@ def distance_to_nash(strategy, nash_equilibrium):
     return np.linalg.norm(strategy - nash_equilibrium)
 
 
-def exploitability(strategy, game):
+def exploitability(strategy, game, player_id=0):
     """
-    Calculate exploitability: maximum gain from best response.
+    Calculate exploitability: how much the OPPONENT can gain by playing best response.
+    Exploitability of my strategy = opponent's gain when they exploit me.
     
     Args:
-        strategy: Current mixed strategy
+        strategy: Current mixed strategy (of the player we're evaluating)
         game: Game object
+        player_id: 0 for Row Player, 1 for Column Player (default: 0)
         
     Returns:
-        Exploitability value (float)
+        Exploitability value (float), >= 0. Zero at Nash.
     """
     strategy = np.array(strategy)
     
-    # Best response to current strategy
-    best_response = game.best_response(strategy)
+    # Opponent's best response to current strategy (who exploits us)
+    opp_player_id = 1 - player_id
+    opp_best_response = game.best_response(strategy, player_id=opp_player_id)
     
-    # Expected payoff of best response
-    expected_payoff_br = np.dot(game.payoff_matrix[best_response], strategy)
-    
-    # Expected payoff of current strategy
-    expected_payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
-    
-    # Exploitability = difference
-    return expected_payoff_br - expected_payoff_current
+    if player_id == 0:
+        # Row's strategy: opponent is Column. Column's BR minimizes Row's payoff.
+        # Payoff when Column exploits: Row plays strategy, Column plays pure BR
+        payoff_when_exploited = np.dot(strategy, game.payoff_matrix[:, opp_best_response])
+        payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+        # Exploitability = how much Row loses when exploited
+        return payoff_current - payoff_when_exploited
+    else:
+        # Column's strategy: opponent is Row. Row's BR maximizes Row's payoff (= minimizes Column's).
+        payoff_when_exploited = np.dot(game.payoff_matrix[opp_best_response], strategy)
+        payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+        # Column's payoff = -Row's. Exploitability = Column's loss = Row's gain when exploited
+        return payoff_when_exploited - payoff_current
 
 
 def cumulative_reward(reward_history):
@@ -58,15 +66,7 @@ def cumulative_reward(reward_history):
 
 def regret(action_history, reward_history, best_possible_reward):
     """
-    Calculate cumulative regret: loss vs optimal play.
-    
-    Args:
-        action_history: List of actions taken
-        reward_history: List of rewards received
-        best_possible_reward: Best possible reward per round
-        
-    Returns:
-        Cumulative regret (float)
+    Calculate cumulative regret against optimal constant reward (Regret against Nature).
     """
     if not reward_history:
         return 0.0
@@ -74,6 +74,93 @@ def regret(action_history, reward_history, best_possible_reward):
     total_reward = sum(reward_history)
     optimal_reward = best_possible_reward * len(reward_history)
     return optimal_reward - total_reward
+
+
+def external_regret(agent_history, opponent_history, game, player_id):
+    """
+    Calculate External Regret: Max gain if we had played the best fixed action 
+    against the opponent's actual history, minus actual reward.
+    
+    Args:
+        agent_history: List of actions taken by agent
+        opponent_history: List of actions taken by opponent
+        game: Game object
+        player_id: 0 (Row) or 1 (Col)
+        
+    Returns:
+        External Regret (float)
+    """
+    if not agent_history or not opponent_history:
+        return 0.0
+        
+    # Calculate actual total reward
+    actual_reward = 0
+    opponent_history_indices = np.array(opponent_history)
+    
+    # Calculate expected reward for each fixed action against opponent's history
+    # We sum payoffs for playing action 'a' against all 'b' in opponent_history
+    
+    n_actions = game.n_actions
+    cumulative_payoffs_for_fixed_actions = np.zeros(n_actions)
+    
+    for i, opp_action in enumerate(opponent_history):
+        # Calculate actual reward received
+        my_action = agent_history[i]
+        
+        if player_id == 0:
+            payoff = game.payoff_matrix[my_action, opp_action]
+            # Accumulate potential payoffs for all fixed actions
+            cumulative_payoffs_for_fixed_actions += game.payoff_matrix[:, opp_action]
+        else:
+            # P2 payoff is negative of P1 payoff
+            payoff = -game.payoff_matrix[opp_action, my_action]
+            # P2 potential payoffs: row i is P2 action, col j is P1 action (opp)
+            # P1 matrix is M[opp_action, my_candidate]
+            # P2 payoff is -M[opp_action, my_candidate]
+            # We want vector of size n_actions (my_candidate)
+            cumulative_payoffs_for_fixed_actions += -game.payoff_matrix[opp_action, :]
+            
+        actual_reward += payoff
+        
+    # Best fixed strategy payoff
+    best_fixed_reward = np.max(cumulative_payoffs_for_fixed_actions)
+    
+    return best_fixed_reward - actual_reward
+
+
+def external_regret_history(agent_history, opponent_history, game, player_id):
+    """
+    Cumulative external regret at each time step (for plotting).
+    regret_t = best fixed action payoff up to t - actual reward up to t.
+    
+    Args:
+        agent_history: List of actions taken by agent
+        opponent_history: List of actions taken by opponent
+        game: Game object
+        player_id: 0 (Row) or 1 (Col)
+        
+    Returns:
+        List of cumulative external regrets, length = len(agent_history)
+    """
+    n = len(agent_history)
+    if n == 0 or len(opponent_history) != n:
+        return []
+    n_actions = game.n_actions
+    cumulative_payoffs_per_action = np.zeros(n_actions)
+    actual_cumulative = 0
+    history = []
+    for t in range(n):
+        my_action = agent_history[t]
+        opp_action = opponent_history[t]
+        if player_id == 0:
+            actual_cumulative += game.payoff_matrix[my_action, opp_action]
+            cumulative_payoffs_per_action += game.payoff_matrix[:, opp_action]
+        else:
+            actual_cumulative += -game.payoff_matrix[opp_action, my_action]
+            cumulative_payoffs_per_action += -game.payoff_matrix[opp_action, :]
+        best_fixed = np.max(cumulative_payoffs_per_action)
+        history.append(best_fixed - actual_cumulative)
+    return history
 
 
 def strategy_variance(strategy_history):
