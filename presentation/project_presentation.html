@@ -1,0 +1,508 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Fictitious Play και Reinforcement Learning</title><style>body{margin:0;font-family:"Open Sans",sans-serif;background:#e8e8e8}#slideshow{position:relative;width:1280px;height:720px;margin:20px auto;overflow:hidden;background:#fff}.slides{width:100%;height:100%}.slide{display:none;width:100%;height:100%}.slide.active{display:block}.slide iframe{width:100%;height:100%;border:0;display:block}#prev,#next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;padding:12px 16px;cursor:pointer;font-size:20px;border-radius:6px}#prev{left:10px}#next{right:10px}#indicator{position:absolute;right:16px;bottom:12px;background:rgba(255,255,255,.9);padding:6px 10px;border-radius:6px;font-weight:600}</style></head><body><!-- Slides 1..15 --><div id="slideshow"><div class="slides"><section class="slide" data-index="1"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Fictitious Play και Reinforcement Learning&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;position:relative;box-sizing:border-box;padding:50px}
+.slide h1{font-size:36px;margin:0 0 16px;color:#1a365d;font-weight:600}
+.slide .subtitle{font-size:22px;color:#4a5568;margin-bottom:24px}
+.slide .meta{font-size:16px;color:#718096}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Fictitious Play και Reinforcement Learning&lt;/h1&gt;
+&lt;p class=&quot;subtitle&quot;&gt;Υπολογισμός ισορροπιών σε μηδενικού αθροίσματος και στοχαστικά παίγνια&lt;/p&gt;
+&lt;p class=&quot;meta&quot;&gt;Πλέσσιας Γιώργος, Τσαγκέτας Ορέστης — Φεβρουάριος 2026&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="2"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Θεωρητικό πλαίσιο&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:16px;margin:20px 0 8px;color:#2d3748}
+.slide p, .slide li{font-size:14px;line-height:1.5;color:#2d3748;margin:0 0 6px}
+.slide ul{margin:0;padding-left:20px}
+.slide .formula{background:#f7fafc;border:1px solid #e2e8f0;padding:12px;font-family:Consolas,monospace;font-size:13px;margin:10px 0}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Θεωρητικό πλαίσιο&lt;/h1&gt;
+&lt;h2&gt;Zero-sum παίγνια&lt;/h2&gt;
+&lt;p&gt;U₁ + U₂ = 0. Πίνακας αποδόσεων M: M[i,j] payoff του Row όταν παίζουν (i,j). Μικτές στρατηγικές x∈Δₘ, y∈Δₙ. u(x,y)=xᵀMy.&lt;/p&gt;
+&lt;h2&gt;Ισορροπία Nash&lt;/h2&gt;
+&lt;p&gt;(x*,y*) όπου x*∈argmax xᵀMy*, y*∈argmin (x*)ᵀMy. Σε MP δεν υπάρχει pure NE, μοναδικό mixed NE: (0.5,0.5). Σε RPS: (1/3,1/3,1/3).&lt;/p&gt;
+&lt;h2&gt;Θεώρημα Minimax&lt;/h2&gt;
+&lt;div class=&quot;formula&quot;&gt;maxₓ minᵧ xᵀMy = minᵧ maxₓ xᵀMy&lt;/div&gt;
+&lt;p&gt;Η minimax στρατηγική ταυτίζεται με το Nash. Εφαρμόζεται σε sequential games με τέλεια πληροφορία.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="3"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Fictitious Play και Q-Learning&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:15px;margin:16px 0 6px;color:#2d3748}
+.slide p{font-size:13px;line-height:1.45;color:#2d3748;margin:0 0 6px}
+.slide .formula{background:#f7fafc;border:1px solid #e2e8f0;padding:10px;font-family:Consolas,monospace;font-size:12px;margin:8px 0}
+.slide .cols{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.slide .col{border:1px solid #e2e8f0;padding:16px;background:#fafafa}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Fictitious Play και Q-Learning&lt;/h1&gt;
+&lt;div class=&quot;cols&quot;&gt;
+&lt;div class=&quot;col&quot;&gt;
+&lt;h2&gt;FP (model-based)&lt;/h2&gt;
+&lt;div class=&quot;formula&quot;&gt;ŷₜ(a)=wₜ(a)/Σwₜ(a&#x27;)&lt;/div&gt;
+&lt;p&gt; belief = εμπειρική συχνότητα αντιπάλου. Σε κάθε γύρο: Best Response στο belief. Ντετερμινιστική επιλογή.&lt;/p&gt;
+&lt;p&gt;Θεωρία Robinson: συγκλίνει στο mixed Nash σε zero-sum. Ευάλωτη σε προσαρμοστικούς αντιπάλους.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;col&quot;&gt;
+&lt;h2&gt;Q-Learning (model-free)&lt;/h2&gt;
+&lt;div class=&quot;formula&quot;&gt;Q(s,a)←(1-α)Q(s,a)+α[r+γ maxₐ&#x27; Q(s&#x27;,a&#x27;)]&lt;/div&gt;
+&lt;p&gt;ε-greedy επιλογή. Δεν μοντελοποιεί αντίπαλο. Προσαρμόζεται σε δυναμικούς αντιπάλους.&lt;/p&gt;
+&lt;p&gt;Σε non-stationary (RL vs RL) δεν συγκλίνει απαραίτητα σε Nash.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="4"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Μετρικές και Παιγνία&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:14px;margin:14px 0 6px;color:#2d3748}
+.slide p{font-size:12px;line-height:1.4;color:#2d3748;margin:0 0 4px}
+table{border-collapse:collapse;font-size:12px;width:100%;margin-top:12px}
+th,td{border:1px solid #cbd5e0;padding:8px 10px;text-align:left}
+th{background:#edf2f7;font-weight:600}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Μετρικές και παιγνία&lt;/h1&gt;
+&lt;h2&gt;Μετρικές αξιολόγησης&lt;/h2&gt;
+&lt;p&gt;Απόσταση Nash (L2): ||strategy − nash||. Exploitability: payoff αντιπάλου με best response. Cumulative reward. External regret: best_fixed − actual.&lt;/p&gt;
+&lt;h2&gt;Παιγνία&lt;/h2&gt;
+&lt;p&gt;Matching Pennies 2×2, NE (0.5,0.5) | Rock-Paper-Scissors 3×3, NE (1/3,1/3,1/3) | Grid Hunter-Prey 3×3 turn-based, capture/timeout.&lt;/p&gt;
+&lt;h2&gt;Παράμετροι&lt;/h2&gt;
+&lt;p&gt;Matrix: 10000 iterations, α=0.1, ε=0.1, seed=42. Grid: 200000 turns, Minimax depth=4, γ=0.99.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="5"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Σύνοψη αποτελεσμάτων&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+table{border-collapse:collapse;font-size:12px;width:100%}
+th,td{border:1px solid #cbd5e0;padding:8px 10px;text-align:left}
+th{background:#edf2f7;font-weight:600}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Σύνοψη αποτελεσμάτων&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Παίγνιο&lt;/th&gt;&lt;th&gt;Σενάριο&lt;/th&gt;&lt;th&gt;Απόσταση Nash (P1/P2)&lt;/th&gt;&lt;th&gt;Cumulative Reward (P1/P2)&lt;/th&gt;&lt;th&gt;Παρατηρήσεις&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Matching Pennies&lt;/td&gt;&lt;td&gt;FP vs FP&lt;/td&gt;&lt;td&gt;0.0007 / 0.0092&lt;/td&gt;&lt;td&gt;60 / −60&lt;/td&gt;&lt;td&gt;Σύγκλιση στο NE&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;FP vs RL&lt;/td&gt;&lt;td&gt;0.0000 / 0.6642&lt;/td&gt;&lt;td&gt;−374 / +374&lt;/td&gt;&lt;td&gt;RL εκμεταλλεύεται FP&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;RL vs RL&lt;/td&gt;&lt;td&gt;0.6642 / 0.6642&lt;/td&gt;&lt;td&gt;−4 / +4&lt;/td&gt;&lt;td&gt;Δεν συγκλίνει&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Rock-Paper-Scissors&lt;/td&gt;&lt;td&gt;FP vs FP&lt;/td&gt;&lt;td&gt;0.0032 / 0.0032&lt;/td&gt;&lt;td&gt;0 / 0&lt;/td&gt;&lt;td&gt;Τέλεια σύγκλιση&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;FP vs RL&lt;/td&gt;&lt;td&gt;0.0152 / 0.7670&lt;/td&gt;&lt;td&gt;−213 / +213&lt;/td&gt;&lt;td&gt;RL εκμεταλλεύεται FP&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;RL vs RL&lt;/td&gt;&lt;td&gt;0.7670 / 0.7670&lt;/td&gt;&lt;td&gt;+212 / −212&lt;/td&gt;&lt;td&gt;Κυκλική δυναμική&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Grid Game&lt;/td&gt;&lt;td&gt;MinMax vs RL (Hunter 1°)&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;Hunter +6998.5&lt;/td&gt;&lt;td&gt;Capture 6.5%&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MinMax vs RL (Prey 1°)&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;Hunter −87868.8&lt;/td&gt;&lt;td&gt;Capture 6.6%, timeouts&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;RL vs RL (Hunter 1°)&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;Hunter +230170.7&lt;/td&gt;&lt;td&gt;Capture 88.9%&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;RL vs RL (Prey 1°)&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;Hunter +177072.6&lt;/td&gt;&lt;td&gt;Capture 85.6%&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="6"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Ροή πειραμάτων και αρχιτεκτονική&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:14px;margin:12px 0 6px;color:#2d3748}
+.slide p, .slide li{font-size:12px;line-height:1.45;color:#2d3748;margin:0 0 4px}
+.slide ul{margin:0;padding-left:18px}
+.slide .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.slide .proc{border:1px solid #e2e8f0;padding:12px;background:#f7fafc}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Ροή πειραμάτων και αρχιτεκτονική&lt;/h1&gt;
+&lt;div class=&quot;cols&quot;&gt;
+&lt;div class=&quot;proc&quot;&gt;
+&lt;h2&gt;Matrix games (MP, RPS)&lt;/h2&gt;
+&lt;ol style=&quot;margin:0;padding-left:18px;font-size:12px&quot;&gt;
+&lt;li&gt;agent1.act(game), agent2.act(game) ταυτόχρονα&lt;/li&gt;
+&lt;li&gt;payoff1=get_payoff(a1,a2), payoff2=−payoff1&lt;/li&gt;
+&lt;li&gt;agent1.update(a1,payoff1,a2), agent2.update(a2,payoff2,a1)&lt;/li&gt;
+&lt;li&gt;get_strategy(), distance_to_nash, exploitability, αποθήκευση&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Turn-based (Grid)&lt;/h2&gt;
+&lt;ol style=&quot;margin:0;padding-left:18px;font-size:12px&quot;&gt;
+&lt;li&gt;current_player → act(game,state)&lt;/li&gt;
+&lt;li&gt;game.step(action) → (reward,done,next_player)&lt;/li&gt;
+&lt;li&gt;update(...,next_state,done)&lt;/li&gt;
+&lt;li&gt;done→reset, καταγραφή rewards&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;Αρχιτεκτονική&lt;/h2&gt;
+&lt;p&gt;&lt;b&gt;games/&lt;/b&gt;: BaseGame, MatchingPennies, RPS, GridGame. get_payoff, best_response, get_nash.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;agents/&lt;/b&gt;: FP, QLearning, StochasticQLearning, Minimax. act, update, get_strategy, reset.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;experiments/&lt;/b&gt;: fp_vs_fp, fp_vs_rl, rl_vs_rl. ExperimentRunner.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;analysis/&lt;/b&gt;: metrics.py, visualizer. distance_to_nash, exploitability, external_regret.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="7"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Matching Pennies FP vs FP&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide .data{font-size:12px;margin-bottom:16px}
+.slide img{max-width:380px;height:auto;border:1px solid #e2e8f0}
+.slide .imgs{display:flex;gap:16px;flex-wrap:wrap}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Matching Pennies — FP vs FP&lt;/h1&gt;
+&lt;p class=&quot;data&quot;&gt;10.000 iterations. FP1 distance: 0.0007 | FP2: 0.0092. Cumulative: +60 / −60. Average ±0.0060. Belief συγκλίνει στο 0.5. Και οι δύο κοντά στο NE (0.5,0.5).&lt;/p&gt;
+&lt;div class=&quot;imgs&quot;&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20FP/strategy1.png&quot; alt=&quot;Strategy&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20FP/distance_comparison.png&quot; alt=&quot;Distance&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20FP/reward_comparison.png&quot; alt=&quot;Reward&quot;/&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="8"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Matching Pennies FP vs RL&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide .data{font-size:12px;margin-bottom:16px}
+.slide img{max-width:300px;height:auto;border:1px solid #e2e8f0}
+.slide .imgs{display:flex;gap:12px;flex-wrap:wrap}
+table{border-collapse:collapse;font-size:11px;margin-bottom:12px}
+th,td{border:1px solid #cbd5e0;padding:6px 8px}
+th{background:#edf2f7}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Matching Pennies — FP vs RL&lt;/h1&gt;
+&lt;p class=&quot;data&quot;&gt;Row=FP, Column=Q-learning (α=0.1, ε=0.1). FP distance: 0.0000 | RL: 0.6642. Cumulative: FP −374, RL +374. FP external regret: 388, RL: −374. RL εκμεταλλεύεται την determinist αντίδραση FP.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Μετρική&lt;/th&gt;&lt;th&gt;FP&lt;/th&gt;&lt;th&gt;RL&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Distance Nash&lt;/td&gt;&lt;td&gt;0.0000&lt;/td&gt;&lt;td&gt;0.6642&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Cumulative reward&lt;/td&gt;&lt;td&gt;−374&lt;/td&gt;&lt;td&gt;+374&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;External regret&lt;/td&gt;&lt;td&gt;388&lt;/td&gt;&lt;td&gt;−374&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class=&quot;imgs&quot;&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20RL/external_regret.png&quot; alt=&quot;Regret&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20RL/avg_payoff.png&quot; alt=&quot;Avg payoff&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20RL/distance_comparison.png&quot; alt=&quot;Distance&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/FP%20vs%20RL/reward_comparison.png&quot; alt=&quot;Reward&quot;/&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="9"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Matching Pennies RL vs RL&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide .data{font-size:12px;margin-bottom:12px}
+.slide img{max-width:400px;height:auto;border:1px solid #e2e8f0}
+.slide .row{display:flex;gap:20px;align-items:flex-start}
+table{border-collapse:collapse;font-size:11px;margin-bottom:12px}
+th,td{border:1px solid #cbd5e0;padding:6px 8px}
+th{background:#edf2f7}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Matching Pennies — RL vs RL&lt;/h1&gt;
+&lt;p class=&quot;data&quot;&gt;RL1 &amp; RL2 distance: 0.6642. Cumulative: −4 / +4. Non-stationary περιβάλλον, κανείς δεν συγκλίνει στο Nash.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;ε=0.05&lt;/th&gt;&lt;th&gt;ε=0.10&lt;/th&gt;&lt;th&gt;ε=0.20&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.01&lt;/td&gt;&lt;td&gt;1.9099&lt;/td&gt;&lt;td&gt;1.8217&lt;/td&gt;&lt;td&gt;1.6508&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.10&lt;/td&gt;&lt;td&gt;1.9099&lt;/td&gt;&lt;td&gt;1.8217&lt;/td&gt;&lt;td&gt;1.6508&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.50&lt;/td&gt;&lt;td&gt;1.9099&lt;/td&gt;&lt;td&gt;1.8217&lt;/td&gt;&lt;td&gt;1.6508&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p style=&quot;font-size:11px&quot;&gt;Exploitability heatmap (5k iterations). Εξαρτάται μόνο από ε, όχι α.&lt;/p&gt;
+&lt;div class=&quot;row&quot;&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/RL%20vs%20RL/exploitability_heatmap.png&quot; alt=&quot;Heatmap&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/RL%20vs%20RL/distance_comparison.png&quot; alt=&quot;Distance&quot;/&gt;
+&lt;img src=&quot;../results/plots/matching_pennies/RL%20vs%20RL/reward_comparison.png&quot; alt=&quot;Reward&quot;/&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="10"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Rock-Paper-Scissors&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+table{border-collapse:collapse;font-size:12px;margin-bottom:16px}
+th,td{border:1px solid #cbd5e0;padding:8px 10px}
+th{background:#edf2f7}
+.slide img{max-width:380px;height:auto;border:1px solid #e2e8f0}
+.slide .imgs{display:flex;gap:16px}
+.slide .tbl{font-size:11px;margin-bottom:12px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Rock-Paper-Scissors&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Σενάριο&lt;/th&gt;&lt;th&gt;Distance P1/P2&lt;/th&gt;&lt;th&gt;Cumulative P1/P2&lt;/th&gt;&lt;th&gt;Παρατηρήσεις&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;FP vs FP&lt;/td&gt;&lt;td&gt;0.0032 / 0.0032&lt;/td&gt;&lt;td&gt;0 / 0&lt;/td&gt;&lt;td&gt;Τέλεια σύγκλιση (1/3,1/3,1/3)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;FP vs RL&lt;/td&gt;&lt;td&gt;0.0152 / 0.7670&lt;/td&gt;&lt;td&gt;−213 / +213&lt;/td&gt;&lt;td&gt;RL εκμεταλλεύεται, FP regret 234&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;RL vs RL&lt;/td&gt;&lt;td&gt;0.7670 / 0.7670&lt;/td&gt;&lt;td&gt;+212 / −212&lt;/td&gt;&lt;td&gt;Κυκλική δυναμική, ισχυρή ασυμμετρία&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p class=&quot;tbl&quot;&gt;Exploitability sweep (α,ε): 0.88–0.97. Εξαρτάται μόνο από ε.&lt;/p&gt;
+&lt;div class=&quot;imgs&quot;&gt;
+&lt;img src=&quot;../results/plots/rock_paper_scissors/FP%20vs%20RL/distance_comparison.png&quot; alt=&quot;Distance&quot;/&gt;
+&lt;img src=&quot;../results/plots/rock_paper_scissors/FP%20vs%20RL/reward_comparison.png&quot; alt=&quot;Reward&quot;/&gt;
+&lt;img src=&quot;../results/plots/rock_paper_scissors/RL%20vs%20RL/exploitability_heatmap.png&quot; alt=&quot;Heatmap&quot;/&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="11"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Grid MinMax vs RL&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+table{border-collapse:collapse;font-size:12px;margin-bottom:16px}
+th,td{border:1px solid #cbd5e0;padding:8px 10px}
+th{background:#edf2f7}
+.slide img{max-width:380px;height:auto;border:1px solid #e2e8f0}
+.slide .imgs{display:flex;gap:16px}
+.slide p{font-size:12px;margin-bottom:12px;line-height:1.45}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Grid Hunter-Prey — MinMax vs RL&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Πρώτος&lt;/th&gt;&lt;th&gt;Episodes&lt;/th&gt;&lt;th&gt;Captures&lt;/th&gt;&lt;th&gt;Capture rate&lt;/th&gt;&lt;th&gt;Hunter total&lt;/th&gt;&lt;th&gt;Hunter mean&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Hunter&lt;/td&gt;&lt;td&gt;10.264&lt;/td&gt;&lt;td&gt;670&lt;/td&gt;&lt;td&gt;6.5%&lt;/td&gt;&lt;td&gt;+6.998,5&lt;/td&gt;&lt;td&gt;+0.0698&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Prey&lt;/td&gt;&lt;td&gt;10.282&lt;/td&gt;&lt;td&gt;682&lt;/td&gt;&lt;td&gt;6.6%&lt;/td&gt;&lt;td&gt;−87.868,8&lt;/td&gt;&lt;td&gt;−0.8787&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;Hunter first: MinMax κυριαρχεί. Prey first: πολλά timeouts → αρνητικό Hunter reward (−87k). RL Prey μαθαίνει να διαφεύγει. Capture rate παρόμοιο αλλά διαφορετική κατανομή τερματικών (timeouts).&lt;/p&gt;
+&lt;div class=&quot;imgs&quot;&gt;
+&lt;img src=&quot;../results/plots/grid_game/MinMax%20vs%20RL%20-%20Hunter%20first/cumulative_reward.png&quot; alt=&quot;Cumulative Hunter&quot;/&gt;
+&lt;img src=&quot;../results/plots/grid_game/MinMax%20vs%20RL%20-%20Hunter%20first/avg_reward.png&quot; alt=&quot;Avg reward&quot;/&gt;
+&lt;img src=&quot;../results/plots/grid_game/MinMax%20vs%20RL%20-%20Prey%20first/cumulative_reward.png&quot; alt=&quot;Prey first&quot;/&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="12"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Grid RL vs RL&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+table{border-collapse:collapse;font-size:12px;margin-bottom:16px}
+th,td{border:1px solid #cbd5e0;padding:8px 10px}
+th{background:#edf2f7}
+.slide p{font-size:12px;margin-bottom:12px;line-height:1.45}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Grid Hunter-Prey — RL vs RL&lt;/h1&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Πρώτος&lt;/th&gt;&lt;th&gt;Episodes&lt;/th&gt;&lt;th&gt;Captures&lt;/th&gt;&lt;th&gt;Capture rate&lt;/th&gt;&lt;th&gt;Hunter total&lt;/th&gt;&lt;th&gt;Hunter mean&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Hunter&lt;/td&gt;&lt;td&gt;18.872&lt;/td&gt;&lt;td&gt;16.775&lt;/td&gt;&lt;td&gt;88.9%&lt;/td&gt;&lt;td&gt;+230.170,7&lt;/td&gt;&lt;td&gt;+2.1236&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Prey&lt;/td&gt;&lt;td&gt;17.656&lt;/td&gt;&lt;td&gt;15.119&lt;/td&gt;&lt;td&gt;85.6%&lt;/td&gt;&lt;td&gt;+177.072,6&lt;/td&gt;&lt;td&gt;+1.7707&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;85–89% capture vs 6.5% στο MinMax vs RL. RL Hunter κυριαρχεί. Όταν και οι δύο μαθαίνουν, ο Hunter μαθαίνει να κυνηγά πιο αποτελεσματικά από ότι το Prey μαθαίνει να διαφεύγει. Σε μικρό state space το tabular Q-learning παράγει ισχυρές πολιτικές. Στο MinMax vs RL το Prey αντιμετωπίζει «τέλειο» Hunter και ασκείται στη διαφυγή· στο RL vs RL η συμπρωτεύουσα εξέλιξη οδηγεί σε κυριαρχία Hunter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="13"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Συμπεράσματα&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:14px;margin:14px 0 6px;color:#2d3748}
+.slide p{font-size:13px;line-height:1.5;color:#2d3748;margin:0 0 10px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Συμπεράσματα&lt;/h1&gt;
+&lt;h2&gt;FP&lt;/h2&gt;
+&lt;p&gt;Συγκλίνει στο Nash σε self-play (MP, RPS). Ευάλωτη σε RL: δεν είναι no-regret, regret γραμμικό. «Κοντά στο Nash» ≠ «κερδίζω» όταν ο αντίπαλος αλλάζει.&lt;/p&gt;
+&lt;h2&gt;Q-Learning&lt;/h2&gt;
+&lt;p&gt;Εκμεταλλεύεται FP (MP: +374, RPS: +213). Σε RL vs RL matrix: δεν συγκλίνει σε Nash, non-stationary. Στο Grid: RL Hunter 85–89% capture vs 6.5% MinMax vs RL.&lt;/p&gt;
+&lt;h2&gt;Επιλογή μεθόδου&lt;/h2&gt;
+&lt;p&gt;Equilibrium computation (FP) | Robust/minimax | Πρακτική βελτιστοποίηση (RL). FP και Q-learning δεν είναι ανταγωνιστές — διαφορετικός στόχος. Nash = ασφάλεια απέναντι σε βέλτιστο αντίπαλο, όχι εγγύηση reward vs μαθησιακό.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="14"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Exploitability και No-Regret&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:14px;margin:14px 0 6px;color:#2d3748}
+.slide p{font-size:12px;line-height:1.45;color:#2d3748;margin:0 0 8px}
+.slide .cols{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+table{border-collapse:collapse;font-size:11px}
+th,td{border:1px solid #cbd5e0;padding:6px 8px}
+th{background:#edf2f7}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Exploitability και No-Regret&lt;/h1&gt;
+&lt;div class=&quot;cols&quot;&gt;
+&lt;div&gt;
+&lt;h2&gt;Exploitability (RL vs RL)&lt;/h2&gt;
+&lt;p&gt;MP: 1.65–1.91. RPS: 0.88–0.97. Εξαρτάται μόνο από ε: μεγαλύτερο ε → πιο ομοιόμορφη στρατηγική → μικρότερη exploitability. Learning rate α δεν επηρεάζει.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;RPS&lt;/th&gt;&lt;th&gt;ε=0.05&lt;/th&gt;&lt;th&gt;ε=0.10&lt;/th&gt;&lt;th&gt;ε=0.20&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.01&lt;/td&gt;&lt;td&gt;0.9697&lt;/td&gt;&lt;td&gt;0.9393&lt;/td&gt;&lt;td&gt;0.8787&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.10&lt;/td&gt;&lt;td&gt;0.9697&lt;/td&gt;&lt;td&gt;0.9393&lt;/td&gt;&lt;td&gt;0.8787&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;α=0.50&lt;/td&gt;&lt;td&gt;0.9697&lt;/td&gt;&lt;td&gt;0.9393&lt;/td&gt;&lt;td&gt;0.8787&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;No-Regret&lt;/h2&gt;
+&lt;p&gt;No-regret αλγόριθμοι: sublinear external regret O(√T). FP δεν είναι no-regret απέναντι σε RL: regret γραμμικό (388 MP, 234 RPS). RL vs FP: αρνητικό regret (RL κερδίζει περισσότερο από best fixed).&lt;/p&gt;
+&lt;h2&gt;Σύστημα ανταμοιβών&lt;/h2&gt;
+&lt;p&gt;Matrix: +1/−1 ή 0, R₁+R₂=0. Grid: capture +10/−10, timeout −10/+10, distance shaping. γ=0.99.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section><section class="slide" data-index="15"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;
+&lt;title&gt;Τέλος&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;font-family:&#x27;Segoe UI&#x27;,Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:50px;box-sizing:border-box}
+.slide h1{font-size:28px;margin:0 0 30px;color:#1a365d}
+.slide p{font-size:14px;line-height:1.6;color:#2d3748}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide&quot;&gt;
+&lt;h1&gt;Ευχαριστώ&lt;/h1&gt;
+&lt;p&gt;Fictitious Play και Reinforcement Learning — Υπολογισμός ισορροπιών σε μηδενικού αθροίσματος και στοχαστικά παίγνια&lt;/p&gt;
+&lt;p&gt;Πλέσσιας Γιώργος, Τσαγκέτας Ορέστης&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></section></div><button id="prev" aria-label="Previous">◀</button><button id="next" aria-label="Next">▶</button><div id="indicator"></div></div><script>
+(function(){
+  var slides=document.querySelectorAll('.slide');
+  var current=0;
+  function show(n){
+    if(!slides.length)return;
+    for(var i=0;i<slides.length;i++)slides[i].classList.remove('active');
+    slides[n].classList.add('active');
+    var ind=document.getElementById('indicator');
+    if(ind)ind.textContent=(n+1)+' / '+slides.length;
+  }
+  function next(){current=(current+1)%slides.length;show(current);}
+  function prev(){current=(current-1+slides.length)%slides.length;show(current);}
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.onkeydown=function(e){if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();};
+  show(0);
+  window.showSlide=function(n){if(n>=0&&n<slides.length){current=n;show(n);}};
+})();
+</script></body></html>

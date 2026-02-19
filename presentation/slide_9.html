@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Matching Pennies RL vs RL</title>
+<style>
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide .data{font-size:12px;margin-bottom:12px}
+.slide img{max-width:400px;height:auto;border:1px solid #e2e8f0}
+.slide .row{display:flex;gap:20px;align-items:flex-start}
+table{border-collapse:collapse;font-size:11px;margin-bottom:12px}
+th,td{border:1px solid #cbd5e0;padding:6px 8px}
+th{background:#edf2f7}
+</style>
+</head>
+<body>
+<div class="slide">
+<h1>Matching Pennies — RL vs RL</h1>
+<p class="data">RL1 & RL2 distance: 0.6642. Cumulative: −4 / +4. Non-stationary περιβάλλον, κανείς δεν συγκλίνει στο Nash.</p>
+<table>
+<tr><th></th><th>ε=0.05</th><th>ε=0.10</th><th>ε=0.20</th></tr>
+<tr><td>α=0.01</td><td>1.9099</td><td>1.8217</td><td>1.6508</td></tr>
+<tr><td>α=0.10</td><td>1.9099</td><td>1.8217</td><td>1.6508</td></tr>
+<tr><td>α=0.50</td><td>1.9099</td><td>1.8217</td><td>1.6508</td></tr>
+</table>
+<p style="font-size:11px">Exploitability heatmap (5k iterations). Εξαρτάται μόνο από ε, όχι α.</p>
+<div class="row">
+<img src="../results/plots/matching_pennies/RL%20vs%20RL/exploitability_heatmap.png" alt="Heatmap"/>
+<img src="../results/plots/matching_pennies/RL%20vs%20RL/distance_comparison.png" alt="Distance"/>
+<img src="../results/plots/matching_pennies/RL%20vs%20RL/reward_comparison.png" alt="Reward"/>
+</div>
+</div>
+</body>
+</html>

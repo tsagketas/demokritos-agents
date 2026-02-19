@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Συμπεράσματα</title>
+<style>
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 20px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+.slide h2{font-size:14px;margin:14px 0 6px;color:#2d3748}
+.slide p{font-size:13px;line-height:1.5;color:#2d3748;margin:0 0 10px}
+</style>
+</head>
+<body>
+<div class="slide">
+<h1>Συμπεράσματα</h1>
+<h2>FP</h2>
+<p>Συγκλίνει στο Nash σε self-play (MP, RPS). Ευάλωτη σε RL: δεν είναι no-regret, regret γραμμικό. «Κοντά στο Nash» ≠ «κερδίζω» όταν ο αντίπαλος αλλάζει.</p>
+<h2>Q-Learning</h2>
+<p>Εκμεταλλεύεται FP (MP: +374, RPS: +213). Σε RL vs RL matrix: δεν συγκλίνει σε Nash, non-stationary. Στο Grid: RL Hunter 85–89% capture vs 6.5% MinMax vs RL.</p>
+<h2>Επιλογή μεθόδου</h2>
+<p>Equilibrium computation (FP) | Robust/minimax | Πρακτική βελτιστοποίηση (RL). FP και Q-learning δεν είναι ανταγωνιστές — διαφορετικός στόχος. Nash = ασφάλεια απέναντι σε βέλτιστο αντίπαλο, όχι εγγύηση reward vs μαθησιακό.</p>
+</div>
+</body>
+</html>

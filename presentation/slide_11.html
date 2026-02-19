@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Grid MinMax vs RL</title>
+<style>
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#fafafa;color:#222}
+.slide{width:1280px;height:720px;margin:0 auto;background:#fff;padding:40px;box-sizing:border-box}
+.slide h1{font-size:24px;margin:0 0 16px;color:#1a365d;border-bottom:1px solid #e2e8f0;padding-bottom:10px}
+table{border-collapse:collapse;font-size:12px;margin-bottom:16px}
+th,td{border:1px solid #cbd5e0;padding:8px 10px}
+th{background:#edf2f7}
+.slide img{max-width:380px;height:auto;border:1px solid #e2e8f0}
+.slide .imgs{display:flex;gap:16px}
+.slide p{font-size:12px;margin-bottom:12px;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="slide">
+<h1>Grid Hunter-Prey — MinMax vs RL</h1>
+<table>
+<tr><th>Πρώτος</th><th>Episodes</th><th>Captures</th><th>Capture rate</th><th>Hunter total</th><th>Hunter mean</th></tr>
+<tr><td>Hunter</td><td>10.264</td><td>670</td><td>6.5%</td><td>+6.998,5</td><td>+0.0698</td></tr>
+<tr><td>Prey</td><td>10.282</td><td>682</td><td>6.6%</td><td>−87.868,8</td><td>−0.8787</td></tr>
+</table>
+<p>Hunter first: MinMax κυριαρχεί. Prey first: πολλά timeouts → αρνητικό Hunter reward (−87k). RL Prey μαθαίνει να διαφεύγει. Capture rate παρόμοιο αλλά διαφορετική κατανομή τερματικών (timeouts).</p>
+<div class="imgs">
+<img src="../results/plots/grid_game/MinMax%20vs%20RL%20-%20Hunter%20first/cumulative_reward.png" alt="Cumulative Hunter"/>
+<img src="../results/plots/grid_game/MinMax%20vs%20RL%20-%20Hunter%20first/avg_reward.png" alt="Avg reward"/>
+<img src="../results/plots/grid_game/MinMax%20vs%20RL%20-%20Prey%20first/cumulative_reward.png" alt="Prey first"/>
+</div>
+</div>
+</body>
+</html>

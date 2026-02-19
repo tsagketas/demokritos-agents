@@ -20,6 +20,7 @@
 \usepackage{ragged2e}
 \usepackage{enumitem}
 \usepackage{indentfirst}
+\usepackage{float}
 
 \geometry{margin=2.5cm}
 \linespread{1.15}
@@ -381,21 +382,21 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Η εμπειρική συχνότητα (belief) συγκλίνει γρήγορα στο 0.5. Οι απόστασεις τείνουν στο μηδέν και για τους δύο. Τα cumulative rewards παραμένουν κοντά στο μηδέν με μικρή ασυμμετρία (±60 σε 10.000 γύρους ≈ 0.6\% του max). Αυτό επιβεβαιώνει ότι και οι δύο πλησιάζουν το mixed NE και κανείς δεν εκμεταλλεύεται συστηματικά τον άλλον. Η μικρή διαφορά μπορεί να οφείλεται σε τυχαιότητα στην αρχή. Στο FP vs FP οι τελικές αποστάσεις από Nash είναι πολύ μικρές — αυτό σημαίνει ότι οι εμπειρικές κατανομές πλησιάζουν τη mixed Nash (0.5, 0.5). Τα cumulative rewards δεν είναι ακριβώς μηδενικά (+60 και −60), κάτι συμβατό με πεπερασμένο ορίζοντα και μικρές ασυμμετρίες στην πορεία, χωρίς να αναιρεί την ισορροπιακή συμπεριφορά.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs FP/strategy1.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs FP/strategy1.png}
 \caption{Εξέλιξη της πιθανότητας να παίξει «Heads» ο Παίκτης 1 (FP1). Η καμπύλη τείνει στο 0.5.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs FP/distance_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs FP/distance_comparison.png}
 \caption{Ευκλείδεια απόσταση της εμπειρικής στρατηγικής από το Nash (0.5, 0.5). Και οι δύο πράκτορες έχουν απόσταση κοντά στο 0.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs FP/reward_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs FP/reward_comparison.png}
 \caption{Cumulative reward. Οι καμπύλες παραμένουν κοντά στο μηδέν με μικρή τελική διαφορά (±60).}
 \end{figure}
 
@@ -407,27 +408,27 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Η FP παραμένει στο Nash (απόσταση 0), αλλά ο RL δεν συγκλίνει στο NE· η απόστασή του παραμένει υψηλή (0.6642). Ο RL μαθαίνει να προβλέπει την determinist αντίδραση της FP (best response στο belief) και την εκμεταλλεύεται· γι' αυτό το cumulative reward του RL είναι +374 και της FP −374. Το external regret της FP αυξάνεται (388)· η FP δεν είναι no-regret απέναντι σε αυτόν τον δυναμικό αντίπαλο. Το αρνητικό regret του RL (−374) αντιστοιχεί στο ότι κέρδισε περισσότερο από το «best fixed action in hindsight» λόγω της προσαρμοστικής του συμπεριφοράς. Το βασικό σημείο είναι ότι «κοντά στο Nash» δεν συνεπάγεται «κερδίζω» όταν ο αντίπαλος δεν είναι στάσιμος. Ο RL, μέσω προσαρμογής, μπορεί να βρει patterns που αυξάνουν reward στο συγκεκριμένο horizon, ακόμη κι αν η συμπεριφορά του δεν μοιάζει καθόλου με Nash.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs RL/external_regret.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs RL/external_regret.png}
 \caption{Συσσωρευμένο external regret. Η FP (θετική καμπύλη) έχει γραμμικά αυξανόμενο regret· ο RL (αρνητική) έχει sublinear/αρνητικό regret.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs RL/avg_payoff.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs RL/avg_payoff.png}
 \caption{Μέσο payoff ανά γύρο. Ο RL έχει θετικό μέσο payoff, η FP αρνητικό.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs RL/distance_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs RL/distance_comparison.png}
 \caption{Απόσταση από Nash. FP πλησιάζει 0, RL παραμένει περίπου 0.66.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/FP vs RL/reward_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/FP vs RL/reward_comparison.png}
 \caption{Cumulative reward. RL +374, FP −374.}
 \end{figure}
 
@@ -456,9 +457,9 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Οι τιμές (1.65--1.91) είναι υψηλές και συνεπείς με το ότι το RL δεν συγκλίνει στο NE. Παρατηρούμε ότι η exploitability εξαρτάται \emph{μόνο από το \(\varepsilon\)}, όχι από το \(\alpha\). Μεγαλύτερο \(\varepsilon\) → πιο ομοιόμορφη προσέγγιση της στρατηγικής μέσω \eng{get\_strategy()} → πιο κοντά στο (0.5, 0.5) → μικρότερη exploitability. Το learning rate δεν επηρεάζει την τελική exploitability γιατί μετά από 5.000 γύρους τα Q-values και τα argmax έχουν σταθεροποιηθεί παρόμοια ανεξάρτητα από το \(\alpha\).
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/RL vs RL/exploitability_heatmap.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/matching_pennies/RL vs RL/exploitability_heatmap.png}
 \caption{Exploitability heatmap στο Matching Pennies (RL vs RL). Αξόνες: learning rate, epsilon. Υψηλές τιμές = οι learned στρατηγικές απέχουν από το Nash.}
 \end{figure}
 
@@ -478,15 +479,15 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Η FP πλησιάζει το Nash· ο RL παραμένει μακριά (0.7670). Ο RL κερδίζει +213 και έχει σχεδόν μηδενικό external regret (−3)· η FP έχει θετικό και αυξανόμενο regret (234). Η ερμηνεία ταυτίζεται με το Matching Pennies: ο RL παίζει best response στις μικρές στατιστικές αποκλίσεις της FP. Στο RPS οι αποκλίσεις είναι πιο «εκμεταλλεύσιμες» λόγω των τριών ενεργειών, οπότε ο RL πετυχαίνει καλή απόδοση. Το pattern επαναλαμβάνεται: το RL δεν συγκλίνει σε Nash, όμως εκμεταλλεύεται τη δυναμική του FP.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/rock_paper_scissors/FP vs RL/distance_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/rock_paper_scissors/FP vs RL/distance_comparison.png}
 \caption{Απόσταση από Nash στο RPS. FP (μπλε) κοντά στο 0, RL (πορτοκαλί) ~0.77.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/rock_paper_scissors/FP vs RL/reward_comparison.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/rock_paper_scissors/FP vs RL/reward_comparison.png}
 \caption{Cumulative reward RPS. RL +213, FP −213.}
 \end{figure}
 
@@ -513,9 +514,9 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Οι τιμές (0.88--0.97) είναι χαμηλότερες από το Matching Pennies — το θεωρητικό μέγιστο στο RPS είναι περίπου 1.33 για καθαρή στρατηγική. Η ίδια μορφή επαναλαμβάνεται: η exploitability εξαρτάται μόνο από το \(\varepsilon\), όχι από το learning rate.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/rock_paper_scissors/RL vs RL/exploitability_heatmap.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/rock_paper_scissors/RL vs RL/exploitability_heatmap.png}
 \caption{Exploitability heatmap στο Rock-Paper-Scissors (RL vs RL). Οι τιμές (0.88--0.97) είναι συμβατές με το μεγαλύτερο χώρο ενεργειών.}
 \end{figure}
 
@@ -561,21 +562,21 @@ Prey & 17.656 & 15.119 & 85.6\% & +177.072,6 & +1.7707 \\
 
 Στο RL vs RL το Hunter κυριαρχεί σε και τα δύο σεναρία. Capture rate 88.9\% (Hunter first) και 85.6\% (Prey first) — σημαντικά υψηλότερα από το MinMax vs RL (6.5–6.6\%). Ερμηνεία: όταν και οι δύο μαθαίνουν, ο RL Hunter μαθαίνει να κυνηγά πιο αποτελεσματικά, ενώ το RL Prey δεν μαθαίνει τόσο καλά να διαφεύγει όσο το Prey απέναντι σε MinMax. Στο MinMax vs RL, το RL Prey αντιμετωπίζει έναν «τέλειο» Hunter και ασκείται συστηματικά να διαφεύγει· στο RL vs RL και οι δύο εξελίσσονται ταυτόχρονα και η δυναμική οδηγεί σε υψηλή capture rate υπέρ του Hunter. Στο RL vs RL ο Hunter μαθαίνει πολύ ισχυρή πολιτική σύλληψης σε αυτό το μικρό state space. Η πρώτη κίνηση βοηθά το Prey, αλλά δεν αρκεί για να μετατρέψει το αποτέλεσμα σε «ισορροπημένη» κατάσταση: ο Hunter παραμένει σαφώς κυρίαρχος, κάτι που συνδέεται με το μικρό state space και τη δυναμότητα του Q-learning να μάθει γρήγορα αποτελεσματικές chasing πολιτικές.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/grid_game/MinMax vs RL - Hunter first/cumulative_reward.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/grid_game/MinMax vs RL - Hunter first/cumulative_reward.png}
 \caption{Συσσωρευμένο reward στο MinMax vs RL (Hunter first). Hunter (Minimax) θετική τάση.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/grid_game/MinMax vs RL - Hunter first/avg_reward.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/grid_game/MinMax vs RL - Hunter first/avg_reward.png}
 \caption{Μέσο reward (κινητός μέσος) — Hunter first. Ο Hunter έχει θετικό μέσο reward· το Prey βελτιώνεται με το χρόνο.}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{../../results/plots/grid_game/MinMax vs RL - Prey first/cumulative_reward.png}
+\includegraphics[width=0.68\textwidth]{../../results/plots/grid_game/MinMax vs RL - Prey first/cumulative_reward.png}
 \caption{Συσσωρευμένο reward στο MinMax vs RL (Prey first). Ο Hunter λαμβάνει αρνητικό reward λόγω timeout penalties.}
 \end{figure}
 
