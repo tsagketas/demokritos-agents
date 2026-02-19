@@ -19,35 +19,36 @@ def distance_to_nash(strategy, nash_equilibrium):
 
 def exploitability(strategy, game, player_id=0):
     """
-    Calculate exploitability: maximum gain from best response.
+    Calculate exploitability: how much the OPPONENT can gain by playing best response.
+    Exploitability of my strategy = opponent's gain when they exploit me.
     
     Args:
-        strategy: Current mixed strategy
+        strategy: Current mixed strategy (of the player we're evaluating)
         game: Game object
         player_id: 0 for Row Player, 1 for Column Player (default: 0)
         
     Returns:
-        Exploitability value (float)
+        Exploitability value (float), >= 0. Zero at Nash.
     """
     strategy = np.array(strategy)
     
-    # Best response to current strategy (for the specified player)
-    best_response = game.best_response(strategy, player_id=player_id)
+    # Opponent's best response to current strategy (who exploits us)
+    opp_player_id = 1 - player_id
+    opp_best_response = game.best_response(strategy, player_id=opp_player_id)
     
-    # Expected payoff of best response
     if player_id == 0:
-        # Row player: best_response is row action, strategy is column distribution
-        expected_payoff_br = np.dot(game.payoff_matrix[best_response], strategy)
-        # Expected payoff of current strategy (both players use strategy)
-        expected_payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+        # Row's strategy: opponent is Column. Column's BR minimizes Row's payoff.
+        # Payoff when Column exploits: Row plays strategy, Column plays pure BR
+        payoff_when_exploited = np.dot(strategy, game.payoff_matrix[:, opp_best_response])
+        payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+        # Exploitability = how much Row loses when exploited
+        return payoff_current - payoff_when_exploited
     else:
-        # Column player: best_response is column action, strategy is row distribution
-        # Column player's payoff is negative of row player's payoff
-        expected_payoff_br = -np.dot(game.payoff_matrix[:, best_response], strategy)
-        expected_payoff_current = -np.dot(strategy, game.payoff_matrix @ strategy)
-    
-    # Exploitability = difference
-    return expected_payoff_br - expected_payoff_current
+        # Column's strategy: opponent is Row. Row's BR maximizes Row's payoff (= minimizes Column's).
+        payoff_when_exploited = np.dot(game.payoff_matrix[opp_best_response], strategy)
+        payoff_current = np.dot(strategy, game.payoff_matrix @ strategy)
+        # Column's payoff = -Row's. Exploitability = Column's loss = Row's gain when exploited
+        return payoff_when_exploited - payoff_current
 
 
 def cumulative_reward(reward_history):
