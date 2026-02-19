@@ -12,8 +12,8 @@ import tempfile
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-HTML_FILE = SCRIPT_DIR / "project_presentation.html"
-OUTPUT_PDF = SCRIPT_DIR / "project_presentation.pdf"
+HTML_FILE = SCRIPT_DIR / "game-learning" / "project_presentation.html"
+OUTPUT_PDF = SCRIPT_DIR / "game-learning" / "project_presentation.pdf"
 
 HIDE_NAV_CSS = "#prev, #next, #indicator { display: none !important; }"
 

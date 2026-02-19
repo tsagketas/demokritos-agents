@@ -1,0 +1,2864 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Fictitious Play και Reinforcement Learning</title><style>body{margin:0;font-family:"Open Sans",sans-serif;background:#e8e8e8}#slideshow{position:relative;width:1280px;height:720px;margin:20px auto;overflow:hidden;background:#fff}.slides{width:100%;height:100%}.slide{display:none;width:100%;height:100%}.slide.active{display:block}.slide iframe{width:100%;height:100%;border:0;display:block}#prev,#next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:0;padding:12px 16px;cursor:pointer;font-size:20px;border-radius:6px}#prev{left:10px}#next{right:10px}#indicator{position:absolute;right:16px;bottom:12px;background:rgba(255,255,255,.9);padding:6px 10px;border-radius:6px;font-weight:600}</style></head><body><!-- Slides 1..15 --><div id="slideshow"><div class="slides"><section class="slide" data-index="1"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Cover Slide&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&amp;amp;family=Roboto:wght@300;400;500&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #0f172a; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #0f172a; /* Slate 900 */
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .font-heading { font-family: &#x27;Montserrat&#x27;, sans-serif; }
+        
+        /* Decorative Background Shapes */
+        .shape-1 {
+            position: absolute;
+            top: -150px;
+            right: -100px;
+            width: 600px;
+            height: 600px;
+            background-color: #1e3a8a; /* Blue 900 */
+            border-radius: 40px;
+            transform: rotate(15deg);
+            opacity: 0.4;
+            z-index: 0;
+        }
+        .shape-2 {
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background-color: #1d4ed8; /* Blue 700 */
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .shape-3 {
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 20px;
+            height: 20px;
+            background-color: #3b82f6; /* Blue 500 */
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .shape-4 {
+            position: absolute;
+            bottom: 30%;
+            left: 40%;
+            width: 15px;
+            height: 15px;
+            background-color: #60a5fa; /* Blue 400 */
+            border-radius: 50%;
+            z-index: 0;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Background Elements --&gt;
+&lt;div class=&quot;shape-1&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;shape-2&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;shape-3&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;shape-4&quot;&gt;&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;flex-1 flex flex-col justify-center px-24 z-10&quot;&gt;
+&lt;!-- Icon Top Left --&gt;
+&lt;div class=&quot;mb-10 animate-fade-in-down&quot;&gt;
+&lt;div class=&quot;inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl shadow-lg text-white&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chess-board text-4xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Title Section --&gt;
+&lt;div class=&quot;border-l-8 border-blue-500 pl-10 mb-8&quot;&gt;
+&lt;h1 class=&quot;font-heading text-6xl font-extrabold leading-tight mb-4 tracking-tight&quot;&gt;
+                    Fictitious Play 
+                    &lt;span class=&quot;text-blue-400&quot;&gt;&amp;amp;&lt;/span&gt; &lt;br/&gt;
+                    Reinforcement Learning
+                &lt;/h1&gt;
+&lt;p class=&quot;text-3xl font-light text-blue-100 max-w-4xl leading-snug&quot;&gt;
+                    Για υπολογισμό ισορροπιών σε μηδενικού αθροίσματος και στοχαστικά παίγνια
+                &lt;/p&gt;
+&lt;/div&gt;
+&lt;!-- Details / Date --&gt;
+&lt;div class=&quot;flex items-center mt-12 pl-12&quot;&gt;
+&lt;div class=&quot;flex items-center text-blue-300&quot;&gt;
+&lt;i class=&quot;fa-regular fa-calendar-days mr-3 text-xl&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;text-xl tracking-widest font-medium uppercase&quot;&gt;Φεβρουάριος 2026&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Bottom Bar --&gt;
+&lt;div class=&quot;absolute bottom-0 w-full h-3 bg-gradient-to-r from-blue-800 to-blue-500&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute bottom-0 left-0 w-1/3 h-3 bg-blue-400 z-20&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="2"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Περίληψη&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 80px 60px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.2rem;
+        }
+        .highlight-box {
+            background-color: #eff6ff; /* Blue 50 */
+            border-left: 6px solid #3b82f6;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-list-check text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;Περίληψη&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Σύνοψη στόχων και ευρημάτων της μελέτης&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area flex-col&quot;&gt;
+&lt;div class=&quot;flex-1 pr-10&quot;&gt;
+&lt;ul class=&quot;list-none text-2xl text-slate-700 leading-relaxed&quot;&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Μελέτη συμπεριφοράς πρακτόρων&lt;/strong&gt; σε ανταγωνιστικά περιβάλλοντα πολλαπλών πρακτόρων (Multi-Agent Systems).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Σύγκριση αλγορίθμων:&lt;/strong&gt; Fictitious Play (FP - Model Based) έναντι Reinforcement Learning (Q-learning - Model Free).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Πειραματική αξιολόγηση&lt;/strong&gt; σε τρία διακριτά παίγνια:&lt;/p&gt;
+&lt;div class=&quot;flex mt-4 mb-2 ml-4 space-x-6&quot;&gt;
+&lt;div class=&quot;flex items-center bg-slate-100 px-4 py-2 rounded-full text-slate-600 text-lg shadow-sm border border-slate-200&quot;&gt;
+&lt;i class=&quot;fa-solid fa-coins mr-2 text-yellow-500&quot;&gt;&lt;/i&gt;
+&lt;p&gt;Matching Pennies&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center bg-slate-100 px-4 py-2 rounded-full text-slate-600 text-lg shadow-sm border border-slate-200&quot;&gt;
+&lt;i class=&quot;fa-solid fa-hand-scissors mr-2 text-purple-500&quot;&gt;&lt;/i&gt;
+&lt;p&gt;Rock-Paper-Scissors&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center bg-slate-100 px-4 py-2 rounded-full text-slate-600 text-lg shadow-sm border border-slate-200&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chess-board mr-2 text-green-500&quot;&gt;&lt;/i&gt;
+&lt;p&gt;Grid Hunter-Prey&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight-box shadow-sm&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-blue-600 text-3xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-lightbulb&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-xl font-bold text-blue-900 mb-1&quot;&gt;Κεντρικό Εύρημα&lt;/p&gt;
+&lt;p class=&quot;text-2xl text-slate-800 italic&quot;&gt;&quot;Η προσέγγιση της ισορροπίας Nash δεν ταυτίζεται απαραίτητα με την επίτευξη υψηλότερου reward όταν ο αντίπαλος μαθαίνει και προσαρμόζεται.&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 2&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="3"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Θεωρητικό Πλαίσιο - Πράκτορες&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 80px 60px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.2rem;
+        }
+        .concept-card {
+            background-color: #f8fafc;
+            border-left: 5px solid #3b82f6;
+            padding: 1.5rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-top: 1rem;
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-users-gear text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;Θεωρητικό Πλαίσιο - Πράκτορες&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Βασικές έννοιες ορθολογικότητας και στρατηγικής&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;w-2/3 pr-10&quot;&gt;
+&lt;ul class=&quot;list-none text-2xl text-slate-700 leading-relaxed&quot;&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Ορθολογικοί Πράκτορες (Rational Agents):&lt;/strong&gt;&lt;/p&gt;
+&lt;p class=&quot;text-xl text-slate-600 mt-2&quot;&gt;Οντότητες που λαμβάνουν αποφάσεις με στόχο τη μεγιστοποίηση της Αναμενόμενης Χρησιμότητας (Maximum Expected Utility - MEU).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Περιβάλλοντα Πολλαπλών Πρακτόρων (Multi-Agent):&lt;/strong&gt;&lt;/p&gt;
+&lt;p class=&quot;text-xl text-slate-600 mt-2&quot;&gt;Η χρησιμότητα (utility) ενός πράκτορα εξαρτάται όχι μόνο από τις δικές του ενέργειες, αλλά και από τις ενέργειες των άλλων πρακτόρων.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Στρατηγική Σκέψη:&lt;/strong&gt;&lt;/p&gt;
+&lt;p class=&quot;text-xl text-slate-600 mt-2&quot;&gt;Απαραίτητη η πρόβλεψη των κινήσεων των αντιπάλων. Έννοιες κλειδιά:&lt;/p&gt;
+&lt;div class=&quot;flex mt-4 space-x-4&quot;&gt;
+&lt;span class=&quot;bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium&quot;&gt;Best Response&lt;/span&gt;
+&lt;span class=&quot;bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium&quot;&gt;Mixed Strategies&lt;/span&gt;
+&lt;span class=&quot;bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium&quot;&gt;Equilibrium&lt;/span&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class=&quot;w-1/3 pl-4 flex flex-col justify-center&quot;&gt;
+&lt;div class=&quot;bg-white p-6 rounded-xl shadow-lg border border-slate-100&quot;&gt;
+&lt;div class=&quot;flex justify-center mb-4&quot;&gt;
+&lt;div class=&quot;icon-box&quot;&gt;
+&lt;i class=&quot;fa-solid fa-brain&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 class=&quot;text-xl font-bold text-center text-slate-800 mb-2&quot;&gt;Maximum Expected Utility&lt;/h3&gt;
+&lt;p class=&quot;text-center text-slate-600 mb-4&quot;&gt;
+&lt;span class=&quot;font-mono bg-slate-100 px-2 py-1 rounded&quot;&gt;action = argmax E[U(a)]&lt;/span&gt;
+&lt;/p&gt;
+&lt;p class=&quot;text-sm text-slate-500 text-center leading-relaxed&quot;&gt;
+                        Ο πράκτορας επιλέγει την ενέργεια που μεγιστοποιεί το αναμενόμενο αποτέλεσμα, λαμβάνοντας υπόψη τις πιθανότητες και τις αξίες των εκβάσεων.
+                    &lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bg-blue-50 p-6 rounded-xl shadow-md border border-blue-100 mt-6&quot;&gt;
+&lt;div class=&quot;flex items-center mb-2&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chess-knight text-blue-600 mr-3 text-xl&quot;&gt;&lt;/i&gt;
+&lt;h3 class=&quot;text-lg font-bold text-blue-900&quot;&gt;Game Theory Focus&lt;/h3&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-sm text-blue-800 leading-relaxed&quot;&gt;
+                        Εστιάζουμε στο πρόβλημα συντονισμού και ανταγωνισμού όπου οι πράκτορες πρέπει να μοντελοποιήσουν ή να μάθουν τη συμπεριφορά των άλλων.
+                    &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 3&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="4"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Zero-Sum Games και Nash Equilibrium&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;family=Inconsolata:wght@400;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;script src=&quot;https://polyfill.io/v3/polyfill.min.js?features=es6&quot;&gt;&lt;/script&gt;
+&lt;script id=&quot;MathJax-script&quot; src=&quot;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+            gap: 40px;
+        }
+        .math-box {
+            background-color: #f1f5f9;
+            border-left: 5px solid #3b82f6;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .concept-card {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .concept-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #eff6ff;
+            color: #2563eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        /* Custom scrollbar for math content if needed */
+        .math-content {
+            font-family: &#x27;Inconsolata&#x27;, monospace;
+            overflow-x: auto;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-calculator text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Zero-Sum Games &amp;amp; Nash Equilibrium&lt;/h1&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;!-- Left Column: Definitions --&gt;
+&lt;div class=&quot;w-1/2 flex flex-col space-y-6&quot;&gt;
+&lt;div class=&quot;concept-card border-l-4 border-blue-500&quot;&gt;
+&lt;div class=&quot;flex items-center mb-4&quot;&gt;
+&lt;div class=&quot;concept-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-scale-balanced&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 ml-4&quot;&gt;Zero-Sum Games&lt;/h2&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-slate-600 text-lg mb-4&quot;&gt;
+                        Σε παίγνια μηδενικού αθροίσματος, το κέρδος του ενός παίκτη είναι ίσο με την απώλεια του άλλου.
+                    &lt;/p&gt;
+&lt;div class=&quot;math-box bg-slate-50&quot;&gt;
+&lt;p class=&quot;text-xl text-center font-medium text-slate-800&quot;&gt;
+
+                            $$ U_1 + U_2 = 0 \implies U_2 = -U_1 $$
+                        &lt;/p&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-slate-600&quot;&gt;
+                        Ο πίνακας αποδόσεων \( M \) ορίζει το κέρδος του Row Player. Ο Column Player χάνει \( M_{ij} \).
+                    &lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;concept-card border-l-4 border-indigo-500 flex-grow&quot;&gt;
+&lt;div class=&quot;flex items-center mb-4&quot;&gt;
+&lt;div class=&quot;concept-icon text-indigo-600 bg-indigo-50&quot;&gt;
+&lt;i class=&quot;fa-solid fa-users-viewfinder&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 ml-4&quot;&gt;Nash Equilibrium&lt;/h2&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-slate-600 text-lg mb-4&quot;&gt;
+                        Κατάσταση όπου κανένας παίκτης δεν έχει κίνητρο να αλλάξει μονομερώς τη στρατηγική του.
+                    &lt;/p&gt;
+&lt;div class=&quot;bg-indigo-50 p-4 rounded-lg border border-indigo-100&quot;&gt;
+&lt;p class=&quot;text-lg text-indigo-900 font-medium&quot;&gt;
+&lt;i class=&quot;fa-solid fa-circle-check mr-2 text-indigo-600&quot;&gt;&lt;/i&gt;
+                            Αμοιβαία Best Responses
+                        &lt;/p&gt;
+&lt;p class=&quot;text-slate-600 mt-2 text-sm&quot;&gt;
+                            Η στρατηγική κάθε παίκτη είναι η βέλτιστη απάντηση στη στρατηγική του άλλου.
+                        &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Mathematics --&gt;
+&lt;div class=&quot;w-1/2 flex flex-col space-y-6&quot;&gt;
+&lt;div class=&quot;concept-card border-l-4 border-emerald-500 h-full&quot;&gt;
+&lt;div class=&quot;flex items-center mb-6&quot;&gt;
+&lt;div class=&quot;concept-icon text-emerald-600 bg-emerald-50&quot;&gt;
+&lt;i class=&quot;fa-solid fa-square-root-variable&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 ml-4&quot;&gt;Μαθηματική Διατύπωση&lt;/h2&gt;
+&lt;/div&gt;
+&lt;!-- Mixed Strategies --&gt;
+&lt;div class=&quot;mb-6&quot;&gt;
+&lt;h3 class=&quot;text-lg font-bold text-slate-700 mb-2 uppercase tracking-wider text-sm&quot;&gt;Mixed Strategies&lt;/h3&gt;
+&lt;p class=&quot;text-slate-600 mb-2&quot;&gt;Διανύσματα πιθανοτήτων \( x \) και \( y \) για τους παίκτες:&lt;/p&gt;
+&lt;div class=&quot;math-box&quot;&gt;
+&lt;p class=&quot;text-lg text-slate-800 text-center&quot;&gt;
+
+                                $$ u(x, y) = x^\top M y $$
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Minimax Theorem --&gt;
+&lt;div class=&quot;mb-4&quot;&gt;
+&lt;h3 class=&quot;text-lg font-bold text-slate-700 mb-2 uppercase tracking-wider text-sm&quot;&gt;Θεώρημα Minimax&lt;/h3&gt;
+&lt;p class=&quot;text-slate-600 mb-2&quot;&gt;Σε zero-sum παίγνια, η λύση minimax ταυτίζεται με το Nash Equilibrium:&lt;/p&gt;
+&lt;div class=&quot;math-box bg-emerald-50 border-emerald-400&quot;&gt;
+&lt;p class=&quot;text-lg text-slate-800 text-center py-2&quot;&gt;
+
+                                $$ \max_{x} \min_{y} x^\top M y = \min_{y} \max_{x} x^\top M y = v $$
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-sm text-slate-500 mt-2 italic&quot;&gt;
+&lt;i class=&quot;fa-solid fa-info-circle mr-1&quot;&gt;&lt;/i&gt;
+                            Το \( v \) είναι η τιμή του παιγνίου. Ο Row Player μεγιστοποιεί το ελάχιστο κέρδος του, ενώ ο Column Player ελαχιστοποιεί τη μέγιστη ζημιά του.
+                        &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Θεωρητικό Πλαίσιο&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 4&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="5"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Fictitious Play (FP)&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 80px 60px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+            list-style: none;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.2rem;
+        }
+        .highlight-box {
+            background-color: #eff6ff; /* Blue 50 */
+            border-left: 6px solid #3b82f6;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f1f5f9;
+            border-radius: 0.5rem;
+        }
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 22%;
+        }
+        .process-icon {
+            width: 3rem;
+            height: 3rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .process-arrow {
+            color: #94a3b8;
+            font-size: 1.5rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-brain text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;Fictitious Play (FP)&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Model-based μάθηση μέσω εμπειρικής συχνότητας&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area flex-col&quot;&gt;
+&lt;div class=&quot;flex-1 pr-10&quot;&gt;
+&lt;ul class=&quot;list-none text-xl text-slate-700 leading-relaxed&quot;&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Model-based προσέγγιση:&lt;/strong&gt; Ο πράκτορας διατηρεί μια πεποίθηση (belief) για τη στρατηγική του αντιπάλου, βασισμένη στην ιστορική εμπειρική συχνότητα των κινήσεών του.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Best Response Dynamics:&lt;/strong&gt; Σε κάθε γύρο, επιλέγει την ενέργεια που αποτελεί βέλτιστη απόκριση (Best Response) στην τρέχουσα εκτίμηση της στρατηγικής του αντιπάλου.&lt;/p&gt;
+&lt;/li&gt;
+&lt;!-- Visual Process Flow --&gt;
+&lt;div class=&quot;process-flow shadow-sm&quot;&gt;
+&lt;div class=&quot;process-step&quot;&gt;
+&lt;div class=&quot;process-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-eye&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;p class=&quot;font-bold text-sm text-slate-700&quot;&gt;Παρατήρηση&lt;/p&gt;
+&lt;p class=&quot;text-xs text-slate-500&quot;&gt;Ιστορικό κινήσεων&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;process-arrow&quot;&gt;&lt;i class=&quot;fa-solid fa-arrow-right&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;process-step&quot;&gt;
+&lt;div class=&quot;process-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-chart-pie&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;p class=&quot;font-bold text-sm text-slate-700&quot;&gt;Belief Update&lt;/p&gt;
+&lt;p class=&quot;text-xs text-slate-500&quot;&gt;Εμπειρική συχνότητα&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;process-arrow&quot;&gt;&lt;i class=&quot;fa-solid fa-arrow-right&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;process-step&quot;&gt;
+&lt;div class=&quot;process-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-chess-knight&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;p class=&quot;font-bold text-sm text-slate-700&quot;&gt;Best Response&lt;/p&gt;
+&lt;p class=&quot;text-xs text-slate-500&quot;&gt;Μεγιστοποίηση payoff&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;process-arrow&quot;&gt;&lt;i class=&quot;fa-solid fa-arrow-right&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;process-step&quot;&gt;
+&lt;div class=&quot;process-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-bullseye&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;p class=&quot;font-bold text-sm text-slate-700&quot;&gt;Ενέργεια&lt;/p&gt;
+&lt;p class=&quot;text-xs text-slate-500&quot;&gt;Εκτέλεση κίνησης&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Σύγκλιση:&lt;/strong&gt; Θεωρητικά αποδεδειγμένο ότι σε &lt;em&gt;zero-sum&lt;/em&gt; παίγνια, οι εμπειρικές κατανομές των παικτών συγκλίνουν στο &lt;strong&gt;Nash Equilibrium&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Αδυναμία:&lt;/strong&gt; Είναι ντετερμινιστική με βάση το belief → εξαιρετικά &lt;strong&gt;προβλέψιμη&lt;/strong&gt;. Ευάλωτη σε προσαρμοστικούς αντιπάλους (όπως RL agents) που μπορούν να εντοπίσουν και να εκμεταλλευτούν τα patterns της.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight-box shadow-sm mt-4&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-blue-600 text-2xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-triangle-exclamation&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-blue-900 mb-1&quot;&gt;Βασικό Χαρακτηριστικό&lt;/p&gt;
+&lt;p class=&quot;text-xl text-slate-800 italic&quot;&gt;&quot;Η FP βρίσκει το Nash αν παίζει εναντίον του εαυτού της, αλλά μπορεί να χάσει κατά κράτος από έναν έξυπνο, προσαρμοστικό αντίπαλο.&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 5&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="6"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Q-Learning&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;family=Roboto+Mono:wght@500&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;script src=&quot;https://polyfill.io/v3/polyfill.min.js?features=es6&quot;&gt;&lt;/script&gt;
+&lt;script async=&quot;&quot; id=&quot;MathJax-script&quot; src=&quot;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 140px 80px 40px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.6rem;
+            color: #334155;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.1rem;
+        }
+        .equation-box {
+            background-color: #eff6ff; /* Blue 50 */
+            border-left: 6px solid #3b82f6;
+            padding: 1rem 2rem;
+            margin: 1rem 0 1.5rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .math-display {
+            font-family: &#x27;Roboto Mono&#x27;, monospace;
+            font-size: 1.4rem;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .concept-card {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .concept-icon {
+            width: 3rem;
+            height: 3rem;
+            background-color: #dbeafe;
+            color: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-robot text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;Q-Learning&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Model-free Reinforcement Learning σε ανταγωνιστικά περιβάλλοντα&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;flex flex-row h-full&quot;&gt;
+&lt;!-- Left Column: Key Points --&gt;
+&lt;div class=&quot;w-7/12 pr-8 flex flex-col justify-center&quot;&gt;
+&lt;div class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Model-free προσέγγιση:&lt;/strong&gt; Ο πράκτορας δεν μοντελοποιεί ρητά τον αντίπαλο, μαθαίνει μέσω αλληλεπίδρασης (trial-and-error).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;equation-box&quot;&gt;
+&lt;p class=&quot;text-sm text-blue-600 font-bold mb-2 uppercase tracking-wider&quot;&gt;Κανόνας Ενημέρωσης (Update Rule)&lt;/p&gt;
+&lt;div class=&quot;math-display&quot;&gt;
+
+                            \[ Q(s,a) \leftarrow (1-\alpha)Q(s,a) + \alpha[r + \gamma \max_{a&#x27;} Q(s&#x27;,a&#x27;)] \]
+                        &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;ε-greedy exploration:&lt;/strong&gt; Εξισορρόπηση μεταξύ εξερεύνησης (τυχαία δράση) και εκμετάλλευσης (βέλτιστη δράση).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Non-stationary περιβάλλοντα:&lt;/strong&gt; Προσαρμόζεται συνεχώς, αλλά δεν εγγυάται σύγκλιση σε Nash όταν και ο αντίπαλος μαθαίνει (self-play).&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Visual Concepts --&gt;
+&lt;div class=&quot;w-5/12 pl-4 flex flex-col justify-center space-y-5&quot;&gt;
+&lt;div class=&quot;concept-card&quot;&gt;
+&lt;div class=&quot;concept-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-brain&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;font-bold text-lg text-slate-800&quot;&gt;Q-Table&lt;/p&gt;
+&lt;p class=&quot;text-slate-500 text-sm&quot;&gt;Αποθήκευση αξιών για ζεύγη (State, Action)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;concept-card&quot;&gt;
+&lt;div class=&quot;concept-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-compass&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;font-bold text-lg text-slate-800&quot;&gt;Exploration vs Exploitation&lt;/p&gt;
+&lt;p class=&quot;text-slate-500 text-sm&quot;&gt;Παράμετρος ε (epsilon) καθορίζει την τυχαιότητα&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;concept-card&quot;&gt;
+&lt;div class=&quot;concept-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chart-line&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;font-bold text-lg text-slate-800&quot;&gt;Reward Driven&lt;/p&gt;
+&lt;p class=&quot;text-slate-500 text-sm&quot;&gt;Μέγιστοποίηση αθροιστικής ανταμοιβής&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bg-blue-50 p-4 rounded-lg border border-blue-100 mt-2&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;i class=&quot;fa-solid fa-triangle-exclamation text-amber-500 mt-1 mr-3&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;text-slate-700 text-sm leading-relaxed&quot;&gt;
+&lt;strong&gt;Προσοχή:&lt;/strong&gt; Σε multi-agent συστήματα, η &quot;βέλτιστη&quot; πολιτική αλλάζει καθώς ο αντίπαλος προσαρμόζεται, καθιστώντας το περιβάλλον μη-στάσιμο.
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 6&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="7"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Αρχιτεκτονική Συστήματος &amp;amp; Μετρικές&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+            gap: 40px;
+        }
+        .column-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-top: 6px solid;
+            transition: transform 0.3s ease;
+        }
+        .left-card {
+            border-color: #3b82f6; /* Blue 500 */
+        }
+        .right-card {
+            border-color: #10b981; /* Emerald 500 */
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        .left-icon {
+            background-color: #eff6ff;
+            color: #3b82f6;
+        }
+        .right-icon {
+            background-color: #ecfdf5;
+            color: #10b981;
+        }
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .bullet-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.25rem;
+            font-size: 1.1rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .bullet-item::before {
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            font-size: 1rem;
+        }
+        .left-bullet::before {
+            content: &quot;\f101&quot;; /* angle-double-right */
+            color: #3b82f6;
+        }
+        .right-bullet::before {
+            content: &quot;\f058&quot;; /* check-circle */
+            color: #10b981;
+        }
+        .highlight-text {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .metric-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-layer-group text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Αρχιτεκτονική Συστήματος &amp;amp; Μετρικές&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Δομή υλοποίησης και μέθοδοι αξιολόγησης&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;!-- Left Column: Architecture --&gt;
+&lt;div class=&quot;column-card left-card&quot;&gt;
+&lt;div class=&quot;card-header&quot;&gt;
+&lt;div class=&quot;card-icon left-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-sitemap&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800&quot;&gt;Αρχιτεκτονική (3 επίπεδα)&lt;/h2&gt;
+&lt;/div&gt;
+&lt;ul class=&quot;bullet-list&quot;&gt;
+&lt;li class=&quot;bullet-item left-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-blue-700&quot;&gt;Games (Παίγνια):&lt;/span&gt; Περιέχουν τους κανόνες, τους πίνακες αποδόσεων (payoff matrices) και τη λογική υπολογισμού Nash equilibrium.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-item left-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-blue-700&quot;&gt;Agents (Πράκτορες):&lt;/span&gt; Υλοποίηση στρατηγικών (FP, Q-learning, Minimax). Ακολουθούν τον κύκλο: &lt;br/&gt;
+&lt;span class=&quot;inline-flex items-center bg-blue-50 px-3 py-1 rounded text-sm text-blue-800 mt-2 font-mono border border-blue-100&quot;&gt;act → update → get_strategy&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-item left-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-blue-700&quot;&gt;Experiments (Πειράματα):&lt;/span&gt; Συντονισμός εκτέλεσης σεναρίων, συλλογή δεδομένων και παραγωγή γραφημάτων (Analysis/Plots).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;mt-auto bg-blue-50 p-4 rounded-lg border border-blue-100&quot;&gt;
+&lt;div class=&quot;flex items-center text-blue-800 mb-2&quot;&gt;
+&lt;i class=&quot;fa-solid fa-code mr-2&quot;&gt;&lt;/i&gt;
+&lt;h3 class=&quot;font-bold&quot;&gt;Αρθρωτή Σχεδίαση&lt;/h3&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-sm text-blue-700&quot;&gt;Επιτρέπει την εύκολη προσθήκη νέων παιγνίων ή πρακτόρων χωρίς αλλαγές στον πυρήνα του συστήματος.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Metrics --&gt;
+&lt;div class=&quot;column-card right-card&quot;&gt;
+&lt;div class=&quot;card-header&quot;&gt;
+&lt;div class=&quot;card-icon right-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chart-line&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800&quot;&gt;Μετρικές Αξιολόγησης&lt;/h2&gt;
+&lt;/div&gt;
+&lt;ul class=&quot;bullet-list&quot;&gt;
+&lt;li class=&quot;bullet-item right-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-emerald-700&quot;&gt;Distance to Nash:&lt;/span&gt; Ευκλείδεια απόσταση της τρέχουσας στρατηγικής από το θεωρητικό Nash equilibrium.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-item right-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-emerald-700&quot;&gt;Cumulative Reward:&lt;/span&gt; Το συνολικό άθροισμα των ανταμοιβών που έλαβε ο πράκτορας κατά τη διάρκεια του πειράματος.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-item right-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-emerald-700&quot;&gt;External Regret:&lt;/span&gt; Η διαφορά μεταξύ του βέλτιστου κέρδους με σταθερή στρατηγική (best fixed in hindsight) και του πραγματικού κέρδους.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-item right-bullet&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;highlight-text text-emerald-700&quot;&gt;Exploitability:&lt;/span&gt; Πόσο μπορεί να κερδίσει ένας αντίπαλος παίζοντας best response απέναντι στην τρέχουσα στρατηγική μας.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;mt-auto flex justify-between&quot;&gt;
+&lt;div class=&quot;text-center px-4&quot;&gt;
+&lt;i class=&quot;fa-solid fa-bullseye text-emerald-500 text-2xl mb-1&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;text-xs text-slate-500 font-medium&quot;&gt;Ακρίβεια&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;text-center px-4&quot;&gt;
+&lt;i class=&quot;fa-solid fa-trophy text-emerald-500 text-2xl mb-1&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;text-xs text-slate-500 font-medium&quot;&gt;Απόδοση&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;text-center px-4&quot;&gt;
+&lt;i class=&quot;fa-solid fa-shield-halved text-emerald-500 text-2xl mb-1&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;text-xs text-slate-500 font-medium&quot;&gt;Ασφάλεια&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Μεθοδολογία&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 7&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="8"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Matching Pennies Results&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .results-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            border-top: 6px solid #eab308; /* Yellow 500 for Matching Pennies */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .table-container {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 1.1rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .metric-value {
+            font-family: &#x27;Roboto Mono&#x27;, monospace;
+            font-weight: 500;
+        }
+        .positive { color: #16a34a; }
+        .negative { color: #dc2626; }
+        .neutral { color: #64748b; }
+        
+        .insight-box {
+            background-color: #fefce8; /* Yellow 50 */
+            border-left: 4px solid #eab308; /* Yellow 500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .game-icon {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background-color: #eab308;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-table-list text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Matching Pennies - Αποτελέσματα&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Σύγκριση απόδοσης και σύγκλισης ανά ζεύγος πρακτόρων&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;results-card relative&quot;&gt;
+&lt;div class=&quot;game-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-coins&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center mb-6&quot;&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 font-heading&quot;&gt;Πειραματικά Δεδομένα&lt;/h2&gt;
+&lt;span class=&quot;ml-4 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium border border-slate-200&quot;&gt;10.000 Iterations&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;table-container&quot;&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th class=&quot;w-1/4&quot;&gt;Σενάριο (P1 vs P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/3&quot;&gt;Απόσταση Nash (P1 / P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/3&quot;&gt;Cumulative Reward (P1 / P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/12&quot;&gt;Status&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;FP vs FP&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0007&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0092&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value positive&quot;&gt;+60&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value negative&quot;&gt;-60&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-check-circle text-emerald-500 text-xl&quot; title=&quot;Σύγκλιση&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&quot;bg-blue-50&quot;&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;FP vs RL&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0000&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-red-600&quot;&gt;0.6642&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value negative&quot;&gt;-374&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value positive&quot;&gt;+374&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-circle-exclamation text-amber-500 text-xl&quot; title=&quot;Εκμετάλλευση&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;RL vs RL&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-red-600&quot;&gt;0.6642&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-red-600&quot;&gt;0.6642&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value neutral&quot;&gt;-4&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value neutral&quot;&gt;+4&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-xmark-circle text-red-500 text-xl&quot; title=&quot;Μη Σύγκλιση&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;insight-box&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-amber-600 text-2xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-magnifying-glass-chart&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-amber-900 mb-1&quot;&gt;Κρίσιμη Παρατήρηση&lt;/p&gt;
+&lt;p class=&quot;text-slate-700 leading-relaxed&quot;&gt;
+                                Στο σενάριο &lt;span class=&quot;font-bold&quot;&gt;FP vs RL&lt;/span&gt;, ο πράκτορας RL πετυχαίνει σημαντικά υψηλότερο κέρδος (+374) εκμεταλλευόμενος την προβλεψιμότητα της FP, παρόλο που η στρατηγική του απέχει πολύ από το Nash Equilibrium (0.6642). Αυτό αποδεικνύει ότι σε δυναμικά περιβάλλοντα, η βέλτιστη απόδοση δεν ταυτίζεται απαραίτητα με την ισορροπία.
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Αποτελέσματα Πειραμάτων&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 8&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="9"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Rock-Paper-Scissors Results&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;family=Roboto+Mono:wght@400;500&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .results-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            border-top: 6px solid #ef4444; /* Red 500 for RPS */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .table-container {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 1.1rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .metric-value {
+            font-family: &#x27;Roboto Mono&#x27;, monospace;
+            font-weight: 500;
+        }
+        .positive { color: #16a34a; }
+        .negative { color: #dc2626; }
+        .neutral { color: #64748b; }
+        
+        .insight-box {
+            background-color: #fef2f2; /* Red 50 */
+            border-left: 4px solid #ef4444; /* Red 500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .game-icon {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-table-list text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Rock-Paper-Scissors - Αποτελέσματα&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Σύγκριση απόδοσης και σύγκλισης ανά ζεύγος πρακτόρων&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;results-card&quot;&gt;
+&lt;div class=&quot;game-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-hand-scissors&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center mb-6&quot;&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 font-heading&quot;&gt;Πειραματικά Δεδομένα&lt;/h2&gt;
+&lt;span class=&quot;ml-4 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium border border-slate-200&quot;&gt;10.000 Iterations&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;table-container&quot;&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th class=&quot;w-1/4&quot;&gt;Σενάριο (P1 vs P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/3&quot;&gt;Απόσταση Nash (P1 / P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/3&quot;&gt;Cumulative Reward (P1 / P2)&lt;/th&gt;
+&lt;th class=&quot;w-1/12 text-center&quot;&gt;Status&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;FP vs FP&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0032&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0032&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value neutral&quot;&gt;0&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value neutral&quot;&gt;0&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-check-circle text-emerald-500 text-xl&quot; title=&quot;Τέλεια Σύγκλιση&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&quot;bg-blue-50&quot;&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;FP vs RL&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-emerald-600&quot;&gt;0.0152&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-red-600&quot;&gt;0.7670&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value negative&quot;&gt;-213&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value positive&quot;&gt;+213&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-circle-exclamation text-amber-500 text-xl&quot; title=&quot;Εκμετάλλευση&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;RL vs RL&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value text-red-600&quot;&gt;0.7670&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value text-red-600&quot;&gt;0.7670&lt;/span&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;span class=&quot;metric-value positive&quot;&gt;+212&lt;/span&gt; / 
+                                    &lt;span class=&quot;metric-value negative&quot;&gt;-212&lt;/span&gt;
+&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-arrows-spin text-purple-500 text-xl&quot; title=&quot;Κυκλική Δυναμική&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;insight-box&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-red-600 text-2xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chart-line&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-red-900 mb-1&quot;&gt;Κρίσιμη Παρατήρηση&lt;/p&gt;
+&lt;p class=&quot;text-slate-700 leading-relaxed&quot;&gt;
+                                Στο &lt;strong&gt;FP vs FP&lt;/strong&gt; παρατηρείται σχεδόν τέλεια σύγκλιση στο Nash (1/3, 1/3, 1/3) με μηδενικό reward. Αντίθετα, στο &lt;strong&gt;RL vs RL&lt;/strong&gt; εμφανίζεται έντονη ασυμμετρία (+212 / -212) και κυκλική δυναμική, καθώς το Q-learning δεν σταθεροποιείται σε ισορροπία σε αυτό το non-stationary περιβάλλον.
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Αποτελέσματα Πειραμάτων&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 9&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="10"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;External Regret και Exploitability&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/chart.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 60px 40px 60px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
+            color: #334155;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1rem;
+        }
+        .highlight-box {
+            background-color: #eff6ff; /* Blue 50 */
+            border-left: 6px solid #ef4444; /* Red 500 for emphasis */
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            width: 100%;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-scale-unbalanced text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;External Regret &amp;amp; Exploitability&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Ανάλυση σταθερότητας και εκμετάλλευσης στρατηγικών&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;!-- Left Column: Key Points --&gt;
+&lt;div class=&quot;w-1/2 pr-8 flex flex-col justify-center&quot;&gt;
+&lt;ul class=&quot;list-none leading-relaxed&quot;&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;FP vs RL:&lt;/strong&gt; Η Fictitious Play (FP) εμφανίζει &lt;span class=&quot;text-red-600 font-bold&quot;&gt;γραμμικά αυξανόμενο&lt;/span&gt; external regret.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;Ο RL πράκτορας έχει &lt;strong&gt;αρνητικό ή μηδενικό regret&lt;/strong&gt;, καθώς &quot;μαθαίνει&quot; να εκμεταλλεύεται την προβλεψιμότητα της FP.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Exploitability (RL vs RL):&lt;/strong&gt; Υψηλές τιμές που δείχνουν απόσταση από Nash.&lt;/p&gt;
+&lt;ul class=&quot;list-disc pl-8 mt-2 text-xl text-slate-600&quot;&gt;
+&lt;li&gt;Matching Pennies: &lt;strong&gt;1.65 – 1.91&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Rock-Paper-Scissors: &lt;strong&gt;0.88 – 0.97&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight-box shadow-sm&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-red-500 text-3xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-triangle-exclamation&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-xl font-bold text-red-800 mb-1&quot;&gt;Κρίσιμο Συμπέρασμα&lt;/p&gt;
+&lt;p class=&quot;text-2xl text-slate-800 italic&quot;&gt;&quot;Η εγγύτητα στο Nash δεν συνεπάγεται ανωτερότητα σε reward όταν ο αντίπαλος είναι προσαρμοστικός (adaptive).&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Visualization --&gt;
+&lt;div class=&quot;w-1/2 pl-4 flex flex-col items-center justify-center&quot;&gt;
+&lt;div class=&quot;chart-container mb-4 relative&quot;&gt;
+&lt;h3 class=&quot;text-center text-slate-500 font-bold mb-2 text-sm uppercase tracking-wider&quot;&gt;Συγκριση Regret (FP vs RL)&lt;/h3&gt;
+&lt;canvas id=&quot;regretChart&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex justify-between w-full space-x-4&quot;&gt;
+&lt;div class=&quot;bg-blue-50 p-4 rounded-lg flex-1 text-center border border-blue-100&quot;&gt;
+&lt;p class=&quot;text-3xl font-bold text-blue-600&quot;&gt;388&lt;/p&gt;
+&lt;p class=&quot;text-sm text-slate-500 uppercase font-semibold&quot;&gt;FP Regret (MP)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bg-green-50 p-4 rounded-lg flex-1 text-center border border-green-100&quot;&gt;
+&lt;p class=&quot;text-3xl font-bold text-green-600&quot;&gt;-374&lt;/p&gt;
+&lt;p class=&quot;text-sm text-slate-500 uppercase font-semibold&quot;&gt;RL Regret (MP)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 10&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+        const ctx = document.getElementById(&#x27;regretChart&#x27;).getContext(&#x27;2d&#x27;);
+        const regretChart = new Chart(ctx, {
+            type: &#x27;line&#x27;,
+            data: {
+                labels: [&#x27;0&#x27;, &#x27;2k&#x27;, &#x27;4k&#x27;, &#x27;6k&#x27;, &#x27;8k&#x27;, &#x27;10k&#x27;],
+                datasets: [{
+                    label: &#x27;FP External Regret&#x27;,
+                    data: [0, 80, 160, 240, 320, 388],
+                    borderColor: &#x27;#3b82f6&#x27;, // Blue 500
+                    backgroundColor: &#x27;rgba(59, 130, 246, 0.1)&#x27;,
+                    borderWidth: 3,
+                    tension: 0.1,
+                    fill: false
+                },
+                {
+                    label: &#x27;RL External Regret&#x27;,
+                    data: [0, -70, -145, -220, -300, -374],
+                    borderColor: &#x27;#10b981&#x27;, // Emerald 500
+                    backgroundColor: &#x27;rgba(16, 185, 129, 0.1)&#x27;,
+                    borderWidth: 3,
+                    borderDash: [5, 5],
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: &#x27;top&#x27;,
+                    }
+                },
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: &#x27;Cumulative Regret&#x27;
+                        },
+                        grid: {
+                            color: &#x27;#f1f5f9&#x27;
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: &#x27;Iterations&#x27;
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="11"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Grid Hunter-Prey Setup&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 80px 60px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.25rem;
+        }
+        .bullet-point::before {
+            content: &quot;\f054&quot;; /* chevron-right */
+            font-family: &quot;Font Awesome 6 Free&quot;;
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.2rem;
+        }
+        .highlight-box {
+            background-color: #eff6ff; /* Blue 50 */
+            border-left: 6px solid #3b82f6;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .grid-visual {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        .grid-cell {
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header Background --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-accent&quot;&gt;&lt;/div&gt;
+&lt;!-- Header Content --&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20&quot;&gt;
+&lt;div class=&quot;w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chess-board text-blue-800 text-3xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-4xl font-bold font-heading tracking-wide&quot;&gt;Grid Hunter-Prey Setup&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-lg font-light mt-1&quot;&gt;Ρυθμίσεις και παράμετροι του στοχαστικού παιγνίου&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area flex-row&quot;&gt;
+&lt;!-- Left Column: Text Content --&gt;
+&lt;div class=&quot;flex-1 pr-10&quot;&gt;
+&lt;ul class=&quot;list-none text-xl text-slate-700 leading-relaxed&quot;&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Περιβάλλον:&lt;/strong&gt; Στοχαστικό, turn-based παίγνιο σε πλέγμα &lt;strong&gt;3×3&lt;/strong&gt;. Μέγιστη διάρκεια: &lt;strong&gt;20 steps&lt;/strong&gt; ανά επεισόδιο.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Ρόλοι Πρακτόρων:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;flex mt-2 ml-2 space-x-4 mb-2&quot;&gt;
+&lt;div class=&quot;flex items-center bg-red-50 px-3 py-1 rounded-lg border border-red-200&quot;&gt;
+&lt;i class=&quot;fa-solid fa-crosshairs text-red-600 mr-2&quot;&gt;&lt;/i&gt;
+&lt;span class=&quot;font-semibold text-red-800&quot;&gt;Hunter&lt;/span&gt;
+&lt;span class=&quot;text-sm text-red-600 ml-2&quot;&gt;(Minimax ή RL)&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center bg-green-50 px-3 py-1 rounded-lg border border-green-200&quot;&gt;
+&lt;i class=&quot;fa-solid fa-person-running text-green-600 mr-2&quot;&gt;&lt;/i&gt;
+&lt;span class=&quot;font-semibold text-green-800&quot;&gt;Prey&lt;/span&gt;
+&lt;span class=&quot;text-sm text-green-600 ml-2&quot;&gt;(RL - Q-learning)&lt;/span&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Σύστημα Ανταμοιβών (Rewards):&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;grid grid-cols-2 gap-4 mt-2 ml-2 text-lg&quot;&gt;
+&lt;div class=&quot;bg-slate-50 p-3 rounded border border-slate-200&quot;&gt;
+&lt;p class=&quot;font-bold text-slate-800&quot;&gt;&lt;i class=&quot;fa-solid fa-handcuffs text-blue-500 mr-2&quot;&gt;&lt;/i&gt;Capture&lt;/p&gt;
+&lt;p class=&quot;text-slate-600 text-sm&quot;&gt;Hunter: &lt;span class=&quot;text-green-600 font-bold&quot;&gt;+10&lt;/span&gt; / Prey: &lt;span class=&quot;text-red-600 font-bold&quot;&gt;-10&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bg-slate-50 p-3 rounded border border-slate-200&quot;&gt;
+&lt;p class=&quot;font-bold text-slate-800&quot;&gt;&lt;i class=&quot;fa-solid fa-hourglass-end text-orange-500 mr-2&quot;&gt;&lt;/i&gt;Timeout&lt;/p&gt;
+&lt;p class=&quot;text-slate-600 text-sm&quot;&gt;Hunter: &lt;span class=&quot;text-red-600 font-bold&quot;&gt;-10&lt;/span&gt; / Prey: &lt;span class=&quot;text-green-600 font-bold&quot;&gt;+10&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p class=&quot;text-sm text-slate-500 mt-2 ml-2 italic&quot;&gt;* Χρήση distance-based shaping για καθοδήγηση μάθησης&lt;/p&gt;
+&lt;/li&gt;
+&lt;li class=&quot;bullet-point&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Παράμετροι Εκπαίδευσης:&lt;/strong&gt; 200,000 turns, discount factor γ=0.99, ε-decay για exploration.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Visual Representation --&gt;
+&lt;div class=&quot;w-1/3 flex flex-col justify-center items-center pl-6 border-l border-slate-200&quot;&gt;
+&lt;div class=&quot;bg-white p-6 rounded-xl shadow-lg border border-slate-100 mb-6&quot;&gt;
+&lt;h3 class=&quot;text-center text-blue-900 font-bold mb-4 text-lg&quot;&gt;Πλέγμα 3x3&lt;/h3&gt;
+&lt;div class=&quot;grid-visual&quot;&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;i class=&quot;fa-solid fa-crosshairs text-red-600 text-3xl&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;i class=&quot;fa-solid fa-person-running text-green-600 text-3xl&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-cell&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mt-4 flex justify-between text-xs text-slate-500 px-2&quot;&gt;
+&lt;span&gt;&lt;i class=&quot;fa-solid fa-arrow-right mr-1&quot;&gt;&lt;/i&gt;State Space: 81&lt;/span&gt;
+&lt;span&gt;&lt;i class=&quot;fa-solid fa-gamepad mr-1&quot;&gt;&lt;/i&gt;Actions: 5&lt;/span&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlight-box w-full&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-blue-600 text-2xl mr-3 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-circle-info&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-blue-900 mb-1&quot;&gt;Στόχος&lt;/p&gt;
+&lt;p class=&quot;text-base text-slate-800&quot;&gt;Ο Hunter προσπαθεί να ελαχιστοποιήσει τον χρόνο σύλληψης, ενώ το Prey προσπαθεί να επιβιώσει μέχρι το timeout.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-6 right-10 text-slate-400 text-sm flex items-center&quot;&gt;
+&lt;p&gt;Fictitious Play &amp;amp; RL - Φεβρουάριος 2026&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 11&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="12"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Grid Game - MinMax vs RL Results&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;family=Roboto+Mono:wght@400;500&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .results-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            border-top: 6px solid #22c55e; /* Green 500 for Grid Game */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .table-container {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 1.1rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .metric-value {
+            font-family: &#x27;Roboto Mono&#x27;, monospace;
+            font-weight: 500;
+        }
+        .positive { color: #16a34a; }
+        .negative { color: #dc2626; }
+        .neutral { color: #64748b; }
+        
+        .insight-box {
+            background-color: #f0fdf4; /* Green 50 */
+            border-left: 4px solid #22c55e; /* Green 500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .game-icon {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-table-list text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Grid Game - MinMax vs RL&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Επίδραση της σειράς κίνησης στα αποτελέσματα&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;results-card&quot;&gt;
+&lt;div class=&quot;game-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-border-all&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center mb-6&quot;&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 font-heading&quot;&gt;Αποτελέσματα: Minimax Hunter vs RL Prey&lt;/h2&gt;
+&lt;span class=&quot;ml-4 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium border border-slate-200&quot;&gt;200.000 Turns&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;table-container&quot;&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Πρώτος Παίκτης&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Episodes&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Captures&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Capture Rate&lt;/th&gt;
+&lt;th class=&quot;w-1/3&quot;&gt;Hunter Total Reward&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;&lt;i class=&quot;fa-solid fa-crosshairs mr-2 text-slate-400&quot;&gt;&lt;/i&gt;Hunter&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;10,264&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;670&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value neutral&quot;&gt;6.5%&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value positive&quot;&gt;+6,998.5&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&quot;bg-blue-50&quot;&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;&lt;i class=&quot;fa-solid fa-person-running mr-2 text-slate-400&quot;&gt;&lt;/i&gt;Prey&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;10,282&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;682&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value neutral&quot;&gt;6.6%&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value negative&quot;&gt;-87,868.8&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;insight-box&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-green-600 text-2xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-lightbulb&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-green-900 mb-1&quot;&gt;Σημαντικό Εύρημα&lt;/p&gt;
+&lt;p class=&quot;text-slate-700 leading-relaxed&quot;&gt;
+                            Παρόλο που το &lt;strong&gt;Capture Rate&lt;/strong&gt; παραμένει σταθερό (~6.5-6.6%), η &lt;strong&gt;σειρά κίνησης&lt;/strong&gt; αλλάζει δραματικά το συνολικό reward. Όταν το Prey κινείται πρώτο, καταφέρνει να αποφεύγει τη σύλληψη μέχρι το timeout (max steps), προκαλώντας μεγάλες αρνητικές ποινές στον Hunter (-10 ανά timeout), οδηγώντας σε τεράστιο αρνητικό συνολικό reward.
+                        &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Αποτελέσματα Πειραμάτων - Grid Game&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 12&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="13"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Grid Game - RL vs RL&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;family=Roboto+Mono:wght@500&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .results-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            border-top: 6px solid #dc2626; /* Red 600 for RL vs RL/Hunter Dominance */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .table-container {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 1.1rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .metric-value {
+            font-family: &#x27;Roboto Mono&#x27;, monospace;
+            font-weight: 500;
+        }
+        .positive { color: #16a34a; }
+        .negative { color: #dc2626; }
+        .neutral { color: #64748b; }
+        .highlight { font-weight: 700; color: #b91c1c; }
+        
+        .insight-box {
+            background-color: #fef2f2; /* Red 50 */
+            border-left: 4px solid #dc2626; /* Red 600 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .game-icon {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background-color: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-robot text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Grid Game - RL vs RL&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Σύγκριση απόδοσης όταν και οι δύο πράκτορες μαθαίνουν (Stochastic Q-Learning)&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;results-card relative&quot;&gt;
+&lt;div class=&quot;game-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-chess-board&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div class=&quot;flex items-center mb-6&quot;&gt;
+&lt;h2 class=&quot;text-2xl font-bold text-slate-800 font-heading&quot;&gt;Αποτελέσματα Μάθησης&lt;/h2&gt;
+&lt;span class=&quot;ml-4 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium border border-slate-200&quot;&gt;200.000 Turns&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;table-container&quot;&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Πρώτος Παίκτης&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Episodes&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Captures&lt;/th&gt;
+&lt;th class=&quot;w-1/6&quot;&gt;Capture Rate&lt;/th&gt;
+&lt;th class=&quot;w-1/4&quot;&gt;Hunter Total Reward&lt;/th&gt;
+&lt;th class=&quot;w-1/12&quot;&gt;Status&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;Hunter&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;18,872&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;16,775&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value highlight&quot;&gt;88.9%&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value positive&quot;&gt;+230,170.7&lt;/span&gt;&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-crown text-amber-500 text-xl&quot; title=&quot;Κυριαρχία Hunter&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&quot;bg-blue-50&quot;&gt;
+&lt;td class=&quot;font-bold text-blue-900&quot;&gt;Prey&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;17,656&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value&quot;&gt;15,119&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value highlight&quot;&gt;85.6%&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class=&quot;metric-value positive&quot;&gt;+177,072.6&lt;/span&gt;&lt;/td&gt;
+&lt;td class=&quot;text-center&quot;&gt;&lt;i class=&quot;fa-solid fa-check text-emerald-500 text-xl&quot; title=&quot;Υψηλό Capture Rate&quot;&gt;&lt;/i&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;insight-box&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;div class=&quot;text-red-600 text-2xl mr-4 mt-1&quot;&gt;
+&lt;i class=&quot;fa-solid fa-crosshairs&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-lg font-bold text-red-900 mb-1&quot;&gt;Κυριαρχία του Hunter&lt;/p&gt;
+&lt;p class=&quot;text-slate-700 leading-relaxed&quot;&gt;
+                                Όταν και οι δύο πράκτορες μαθαίνουν ταυτόχρονα, ο Hunter κυριαρχεί με εξαιρετικά υψηλά ποσοστά σύλληψης (85-89%), σε πλήρη αντίθεση με το σενάριο Minimax vs RL (~6.5%). Αυτό δείχνει ότι ο RL Hunter μαθαίνει να κυνηγά πιο αποτελεσματικά από ότι το RL Prey μαθαίνει να διαφεύγει σε αυτό το μικρό state space.
+                            &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Αποτελέσματα Πειραμάτων&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 13&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="14"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Κεντρικά Συμπεράσματα&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .conclusion-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .conclusion-card::before {
+            content: &#x27;&#x27;;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background-color: #3b82f6; /* Blue 500 */
+        }
+        .conclusion-item {
+            display: flex;
+            margin-bottom: 1.2rem;
+            align-items: flex-start;
+        }
+        .item-number {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background-color: #eff6ff;
+            color: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+            margin-right: 1rem;
+            border: 2px solid #bfdbfe;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.15rem;
+            margin-bottom: 0.25rem;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        .item-desc {
+            color: #475569;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .key-takeaway {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .takeaway-icon {
+            font-size: 2.5rem;
+            color: #fbbf24; /* Amber 400 */
+            margin-right: 1.5rem;
+        }
+        .highlight {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            opacity: 0.05;
+            background-image: radial-gradient(#3b82f6 2px, transparent 2px);
+            background-size: 20px 20px;
+            z-index: 0;
+            pointer-events: none;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-clipboard-check text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Κεντρικά Συμπεράσματα&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Σύνοψη των σημαντικότερων ευρημάτων από τα πειράματα&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;conclusion-card w-full&quot;&gt;
+&lt;div class=&quot;bg-pattern&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid grid-cols-2 gap-x-12 gap-y-2 z-10 mb-6&quot;&gt;
+&lt;!-- Column 1 --&gt;
+&lt;div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-number&quot;&gt;1&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;FP vs FP: Ισορροπία&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Συγκλίνει στο Nash με ελάχιστη απόσταση. Τα rewards είναι ισορροπημένα και κοντά στο μηδέν, επιβεβαιώνοντας τη θεωρητική πρόβλεψη.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-number&quot;&gt;2&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;FP vs RL: Εκμετάλλευση&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Ο RL πράκτορας εκμεταλλεύεται την προβλεψιμότητα της FP (&lt;span class=&quot;highlight&quot;&gt;+374&lt;/span&gt; στο MP), παρόλο που η στρατηγική του απέχει σημαντικά από το Nash.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-number&quot;&gt;3&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;RL vs RL: Αστάθεια&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Δεν συγκλίνει σε Nash στα matrix games λόγω του non-stationary περιβάλλοντος. Εμφανίζεται κυκλική δυναμική ή ασυμμετρία rewards.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Column 2 --&gt;
+&lt;div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-number&quot;&gt;4&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;Grid Game: Υπεροχή RL&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Ο RL Hunter κυριαρχεί με capture rate &lt;span class=&quot;highlight&quot;&gt;85–89%&lt;/span&gt; (έναντι 6.5% του Minimax). Σε πολύπλοκα στοχαστικά περιβάλλοντα, η προσαρμοστικότητα υπερέχει.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-number&quot;&gt;5&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;Σημασία Σειράς Κίνησης&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Στο Grid Game, η σειρά κίνησης επηρεάζει δραματικά το συνολικό reward λόγω των timeouts, ακόμα και με παρόμοια ποσοστά σύλληψης.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Key Takeaway Box --&gt;
+&lt;div class=&quot;key-takeaway&quot;&gt;
+&lt;div class=&quot;takeaway-icon&quot;&gt;
+&lt;i class=&quot;fa-solid fa-star&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-xl font-bold mb-1 font-heading&quot;&gt;Βασικό Συμπέρασμα&lt;/p&gt;
+&lt;p class=&quot;text-lg font-light italic&quot;&gt;&quot;Το να βρίσκεσαι κοντά στο Nash Equilibrium δεν σημαίνει απαραίτητα ότι θα πάρεις το καλύτερο reward όταν ο αντίπαλος είναι προσαρμοστικός (adaptive).&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Συμπεράσματα&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 14&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section><section class="slide" data-index="15"><iframe srcdoc="&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;el&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;/&gt;
+&lt;meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/&gt;
+&lt;title&gt;Τελικές Σκέψεις&lt;/title&gt;
+&lt;link href=&quot;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;amp;family=Roboto:wght@300;400;500;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+&lt;style&gt;
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: &#x27;Roboto&#x27;, sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 120px 60px 40px 60px;
+            z-index: 10;
+        }
+        .conclusion-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .conclusion-card::before {
+            content: &#x27;&#x27;;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background-color: #3b82f6; /* Blue 500 */
+        }
+        .conclusion-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+        .item-icon {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            background-color: #eff6ff;
+            color: #3b82f6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1.2rem;
+            border: 2px solid #bfdbfe;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.25rem;
+            margin-bottom: 0.35rem;
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+        }
+        .item-desc {
+            color: #475569;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        .key-takeaway {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1.8rem;
+            border-radius: 0.75rem;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .takeaway-icon {
+            font-size: 2.8rem;
+            color: #fbbf24; /* Amber 400 */
+            margin-right: 2rem;
+        }
+        .highlight {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            opacity: 0.05;
+            background-image: radial-gradient(#3b82f6 2px, transparent 2px);
+            background-size: 24px 24px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            height: 100%;
+        }
+        .column-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .column-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #f8fafc;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        .method-choice-title {
+            font-family: &#x27;Montserrat&#x27;, sans-serif;
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 0.5rem;
+        }
+        .method-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .method-name {
+            font-weight: 700;
+            color: #3b82f6;
+            width: 140px;
+            flex-shrink: 0;
+        }
+        .arrow-icon {
+            color: #94a3b8;
+            margin: 0 1rem;
+        }
+        .method-goal {
+            color: #334155;
+            font-weight: 500;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;slide-container&quot;&gt;
+&lt;!-- Header --&gt;
+&lt;div class=&quot;header-bg&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;absolute top-0 left-0 w-full h-24 flex items-center px-16 z-20&quot;&gt;
+&lt;div class=&quot;flex items-center&quot;&gt;
+&lt;div class=&quot;w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 backdrop-filter backdrop-blur-sm border border-white/20&quot;&gt;
+&lt;i class=&quot;fa-solid fa-lightbulb text-white text-2xl&quot;&gt;&lt;/i&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h1 class=&quot;text-white text-3xl font-bold font-heading tracking-wide&quot;&gt;Τελικές Σκέψεις&lt;/h1&gt;
+&lt;p class=&quot;text-blue-200 text-sm mt-1 font-light&quot;&gt;Σύνοψη στρατηγικών και κατευθύνσεις για επιλογή αλγορίθμων&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Main Content --&gt;
+&lt;div class=&quot;content-area&quot;&gt;
+&lt;div class=&quot;conclusion-card w-full&quot;&gt;
+&lt;div class=&quot;bg-pattern&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-layout z-10&quot;&gt;
+&lt;!-- Left Column: Detailed Analysis --&gt;
+&lt;div class=&quot;column-left&quot;&gt;
+&lt;div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-chess-board&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;Fictitious Play (FP)&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Ιδανικό για &lt;strong&gt;Equilibrium Computation&lt;/strong&gt;. Είναι ερμηνεύσιμο και συγκλίνει θεωρητικά, αλλά παραμένει προβλέψιμο απέναντι σε δυναμικούς αντιπάλους.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-robot&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;Reinforcement Learning (RL)&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Βέλτιστο για &lt;strong&gt;Adaptive Opponents&lt;/strong&gt; και Policy Optimization. Μαθαίνει να εκμεταλλεύεται αδυναμίες, αλλά δεν εγγυάται σύγκλιση σε Nash σε self-play.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;conclusion-item&quot;&gt;
+&lt;div class=&quot;item-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-shield-halved&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;div class=&quot;item-content&quot;&gt;
+&lt;p class=&quot;item-title&quot;&gt;Minimax&lt;/p&gt;
+&lt;p class=&quot;item-desc&quot;&gt;Η απόλυτη λύση όταν υπάρχει &lt;strong&gt;Τέλειο Μοντέλο&lt;/strong&gt; (perfect information). Παρέχει εγγυημένη ασφάλεια (security level) ανεξαρτήτως αντιπάλου.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Right Column: Decision Framework &amp; Core Insight --&gt;
+&lt;div class=&quot;column-right&quot;&gt;
+&lt;div&gt;
+&lt;p class=&quot;method-choice-title&quot;&gt;Οδηγός Επιλογής Μεθόδου&lt;/p&gt;
+&lt;div class=&quot;method-row&quot;&gt;
+&lt;p class=&quot;method-goal&quot;&gt;Αναζήτηση Ισορροπίας&lt;/p&gt;
+&lt;i class=&quot;fa-solid fa-arrow-right arrow-icon&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;method-name&quot;&gt;Fictitious Play&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;method-row&quot;&gt;
+&lt;p class=&quot;method-goal&quot;&gt;Robust Ασφάλεια&lt;/p&gt;
+&lt;i class=&quot;fa-solid fa-arrow-right arrow-icon&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;method-name&quot;&gt;Minimax&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;method-row&quot;&gt;
+&lt;p class=&quot;method-goal&quot;&gt;Πρακτική Απόδοση&lt;/p&gt;
+&lt;i class=&quot;fa-solid fa-arrow-right arrow-icon&quot;&gt;&lt;/i&gt;
+&lt;p class=&quot;method-name&quot;&gt;Q-Learning&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mt-8 pt-6 border-t border-gray-300&quot;&gt;
+&lt;div class=&quot;flex items-start&quot;&gt;
+&lt;i class=&quot;fa-solid fa-quote-left text-blue-300 text-4xl mr-4&quot;&gt;&lt;/i&gt;
+&lt;div&gt;
+&lt;p class=&quot;text-blue-900 font-bold text-lg mb-2&quot;&gt;Multiagent vs Single-agent&lt;/p&gt;
+&lt;p class=&quot;text-slate-600 italic&quot;&gt;&quot;Το Multiagent Learning διαφέρει θεμελιωδώς από το Single-agent Optimization. Η βέλτιστη στρατηγική εξαρτάται από την προσαρμοστικότητα του αντιπάλου, όχι μόνο από το περιβάλλον.&quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Footer --&gt;
+&lt;div class=&quot;absolute bottom-4 right-10 text-slate-400 text-xs flex items-center&quot;&gt;
+&lt;p&gt;Συμπεράσματα&lt;/p&gt;
+&lt;span class=&quot;mx-2&quot;&gt;|&lt;/span&gt;
+&lt;p&gt;Σελίδα 15&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe></section></div><button id="prev" aria-label="Previous">◀</button><button id="next" aria-label="Next">▶</button><div id="indicator"></div></div><script>
+(function(){
+  var slides=document.querySelectorAll('.slide');
+  var current=0;
+  function show(n){
+    if(!slides.length)return;
+    for(var i=0;i<slides.length;i++)slides[i].classList.remove('active');
+    slides[n].classList.add('active');
+    var ind=document.getElementById('indicator');
+    if(ind)ind.textContent=(n+1)+' / '+slides.length;
+  }
+  function next(){current=(current+1)%slides.length;show(current);}
+  function prev(){current=(current-1+slides.length)%slides.length;show(current);}
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.onkeydown=function(e){if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();};
+  show(0);
+  window.showSlide=function(n){if(n>=0&&n<slides.length){current=n;show(n);}};
+})();
+</script></body></html>
