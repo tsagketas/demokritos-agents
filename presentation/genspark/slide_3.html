@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html lang="el">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Θεωρητικό Πλαίσιο - Πράκτορες</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #f8fafc; font-family: 'Roboto', sans-serif; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow: hidden;
+        }
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background-color: #1e3a8a; /* Blue 900 */
+            z-index: 0;
+        }
+        .header-accent {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #3b82f6; /* Blue 500 */
+            z-index: 1;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 140px 80px 60px 80px;
+            z-index: 10;
+        }
+        .bullet-point {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+        .bullet-point::before {
+            content: "\f054"; /* chevron-right */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.35rem;
+            color: #3b82f6; /* Blue 500 */
+            font-size: 1.2rem;
+        }
+        .concept-card {
+            background-color: #f8fafc;
+            border-left: 5px solid #3b82f6;
+            padding: 1.5rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-top: 1rem;
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Header Background -->
+<div class="header-bg"></div>
+<div class="header-accent"></div>
+<!-- Header Content -->
+<div class="absolute top-0 left-0 w-full h-32 flex items-center px-20 z-20">
+<div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center mr-6 shadow-md">
+<i class="fa-solid fa-users-gear text-blue-800 text-3xl"></i>
+</div>
+<div>
+<h1 class="text-white text-4xl font-bold font-heading tracking-wide">Θεωρητικό Πλαίσιο - Πράκτορες</h1>
+<p class="text-blue-200 text-lg font-light mt-1">Βασικές έννοιες ορθολογικότητας και στρατηγικής</p>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<div class="w-2/3 pr-10">
+<ul class="list-none text-2xl text-slate-700 leading-relaxed">
+<li class="bullet-point">
+<p><strong>Ορθολογικοί Πράκτορες (Rational Agents):</strong></p>
+<p class="text-xl text-slate-600 mt-2">Οντότητες που λαμβάνουν αποφάσεις με στόχο τη μεγιστοποίηση της Αναμενόμενης Χρησιμότητας (Maximum Expected Utility - MEU).</p>
+</li>
+<li class="bullet-point">
+<p><strong>Περιβάλλοντα Πολλαπλών Πρακτόρων (Multi-Agent):</strong></p>
+<p class="text-xl text-slate-600 mt-2">Η χρησιμότητα (utility) ενός πράκτορα εξαρτάται όχι μόνο από τις δικές του ενέργειες, αλλά και από τις ενέργειες των άλλων πρακτόρων.</p>
+</li>
+<li class="bullet-point">
+<p><strong>Στρατηγική Σκέψη:</strong></p>
+<p class="text-xl text-slate-600 mt-2">Απαραίτητη η πρόβλεψη των κινήσεων των αντιπάλων. Έννοιες κλειδιά:</p>
+<div class="flex mt-4 space-x-4">
+<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium">Best Response</span>
+<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium">Mixed Strategies</span>
+<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-lg font-medium">Equilibrium</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="w-1/3 pl-4 flex flex-col justify-center">
+<div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100">
+<div class="flex justify-center mb-4">
+<div class="icon-box">
+<i class="fa-solid fa-brain"></i>
+</div>
+</div>
+<h3 class="text-xl font-bold text-center text-slate-800 mb-2">Maximum Expected Utility</h3>
+<p class="text-center text-slate-600 mb-4">
+<span class="font-mono bg-slate-100 px-2 py-1 rounded">action = argmax E[U(a)]</span>
+</p>
+<p class="text-sm text-slate-500 text-center leading-relaxed">
+                        Ο πράκτορας επιλέγει την ενέργεια που μεγιστοποιεί το αναμενόμενο αποτέλεσμα, λαμβάνοντας υπόψη τις πιθανότητες και τις αξίες των εκβάσεων.
+                    </p>
+</div>
+<div class="bg-blue-50 p-6 rounded-xl shadow-md border border-blue-100 mt-6">
+<div class="flex items-center mb-2">
+<i class="fa-solid fa-chess-knight text-blue-600 mr-3 text-xl"></i>
+<h3 class="text-lg font-bold text-blue-900">Game Theory Focus</h3>
+</div>
+<p class="text-sm text-blue-800 leading-relaxed">
+                        Εστιάζουμε στο πρόβλημα συντονισμού και ανταγωνισμού όπου οι πράκτορες πρέπει να μοντελοποιήσουν ή να μάθουν τη συμπεριφορά των άλλων.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="absolute bottom-6 right-10 text-slate-400 text-sm flex items-center">
+<p>Fictitious Play &amp; RL - Φεβρουάριος 2026</p>
+<span class="mx-2">|</span>
+<p>Σελίδα 3</p>
+</div>
+</div>
+</body>
+</html>
