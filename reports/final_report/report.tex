@@ -319,7 +319,7 @@ Rewards: Capture (Hunter πέφτει πάνω στο Prey): +10 Hunter, −10 P
 \begin{itemize}
 \item \eng{distance\_to\_nash(strategy, nash)}: Ευκλείδεια (L2) απόσταση του διανύσματος στρατηγικής από το θεωρητικό Nash. Μικρή τιμή = κοντά σε ισορροπία.
 
-\item \eng{exploitability(strategy, game, player\_id)}: Υπολογίζει το best response απέναντι στη στρατηγική, βρίσκει το αναμενόμενο payoff της best response, αφαιρεί το αναμενόμενο payoff της τρέχουσας στρατηγικής. Μεγάλη exploitability = η στρατηγική είναι εύκολα εκμεταλλεύσιμη.
+\item \eng{exploitability(strategy, game, player\_id)}: Υπολογίζει πόσο μπορεί να κερδίσει ο \emph{αντίπαλος} παίζοντας best response απέναντι στη στρατηγική μας. Χρησιμοποιείται το best response του αντιπάλου (όχι του παίκτη που αξιολογείται). Μεγάλη exploitability = η στρατηγική είναι εύκολα εκμεταλλεύσιμη· μηδέν στο Nash.
 
 \item \eng{external\_regret(agent\_history, opponent\_history, game, player\_id)}: Για κάθε χρονική στιγμή t, υπολογίζει το payoff που θα είχε ο πράκτορας αν είχε παίξει πάντα την ίδια (best fixed) ενέργεια έναντι του ιστορικού του αντιπάλου. Το regret = best\_fixed\_reward − actual\_reward. Θετικό = θα είχε κερδίσει περισσότερο με σταθερή στρατηγική.
 
@@ -437,12 +437,29 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Αποτελέσματα: RL1 και RL2 distance 0.6642. RL1 cumulative −4, RL2 +4. Average ±0.0004.
 
-Καμία πλευρά δεν συγκλίνει στο Nash (απόσταση ~0.66). Τα cumulative rewards είναι σχεδόν μηδέν (±4 σε 10.000 γύρων) — δεν υπάρχει συστηματική εκμετάλλευση. Το περιβάλλον είναι non-stationary (ο αντίπαλος αλλάζει συνεχώς) και οι υποθέσεις σύγκλισης του Q-learning δεν ικανοποιούνται. Το heatmap exploitability δείχνει υψηλή exploitability — οι learned στρατηγικές απέχουν από το NE. Η διαφορά με το FP vs RL είναι αισθητή: εδώ κανένας δεν «κρατάει» σταθερή στρατηγική αρκετά για να εκμεταλλευτεί ο άλλος. Στο RL vs RL και οι δύο μένουν μακριά από Nash (0.6642) αλλά το reward είναι σχεδόν ισορροπημένο (−4 και +4). Αυτό δείχνει ότι δεν προκύπτει συστηματική εκμετάλλευση από τη μία πλευρά στο συγκεκριμένο run, αλλά ούτε και ισορροπιακή προσέγγιση.
+Καμία πλευρά δεν συγκλίνει στο Nash (απόσταση ~0.66). Τα cumulative rewards είναι σχεδόν μηδέν (±4 σε 10.000 γύρων) — δεν υπάρχει συστηματική εκμετάλλευση. Το περιβάλλον είναι non-stationary (ο αντίπαλος αλλάζει συνεχώς) και οι υποθέσεις σύγκλισης του Q-learning δεν ικανοποιούνται. Η διαφορά με το FP vs RL είναι αισθητή: εδώ κανένας δεν «κρατάει» σταθερή στρατηγική αρκετά για να εκμεταλλευτεί ο άλλος.
+
+Εκτελέσαμε επίσης hyperparameter sweep (5.000 iterations ανά ζεύγος) για να μελετήσουμε την exploitability της τελικής στρατηγικής του RL1 ως συνάρτηση του learning rate (\(\alpha\)) και του epsilon (\(\varepsilon\)). Η exploitability μετρά πόσο μπορεί να κερδίσει ο αντίπαλος παίζοντας best response απέναντι στη στρατηγική μας — μηδέν στο Nash, μέγιστο 2 στο Matching Pennies για καθαρή στρατηγική.
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & \(\varepsilon=0.05\) & \(\varepsilon=0.10\) & \(\varepsilon=0.20\) \\
+\midrule
+\(\alpha=0.01\) & 1.9099 & 1.8217 & 1.6508 \\
+\(\alpha=0.10\) & 1.9099 & 1.8217 & 1.6508 \\
+\(\alpha=0.50\) & 1.9099 & 1.8217 & 1.6508 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Οι τιμές (1.65--1.91) είναι υψηλές και συνεπείς με το ότι το RL δεν συγκλίνει στο NE. Παρατηρούμε ότι η exploitability εξαρτάται \emph{μόνο από το \(\varepsilon\)}, όχι από το \(\alpha\). Μεγαλύτερο \(\varepsilon\) → πιο ομοιόμορφη προσέγγιση της στρατηγικής μέσω \eng{get\_strategy()} → πιο κοντά στο (0.5, 0.5) → μικρότερη exploitability. Το learning rate δεν επηρεάζει την τελική exploitability γιατί μετά από 5.000 γύρους τα Q-values και τα argmax έχουν σταθεροποιηθεί παρόμοια ανεξάρτητα από το \(\alpha\).
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.8\textwidth]{../../results/plots/matching_pennies/RL vs RL/exploitability_heatmap.png}
-\caption{Heatmap exploitability για διάφορες παραμέτρους. Υψηλές τιμές δείχνουν ότι οι learned στρατηγικές απέχουν από το NE.}
+\caption{Exploitability heatmap στο Matching Pennies (RL vs RL). Αξόνες: learning rate, epsilon. Υψηλές τιμές = οι learned στρατηγικές απέχουν από το Nash.}
 \end{figure}
 
 \subsection{Rock-Paper-Scissors (3×3)}
@@ -477,7 +494,30 @@ Grid Game & MinMax vs RL (Hunter 1°) & — & Hunter +6998.5 & Capture 6.5\% \\
 
 Αποτελέσματα: RL1 και RL2 distance 0.7670. RL1 cumulative +212, RL2 −212. Average +0.0212 / −0.0212.
 
-Σε αντίθεση με το Matching Pennies RL vs RL (όπου τα rewards ήταν σχεδόν 0), εδώ υπάρχει ισχυρή ασυμμετρία (+212 vs −212). Αυτό υποδηλώνει κυκλική ή εκμεταλλευτική δυναμική: ένας RL agent πέτυχε να «προλάβει» τον άλλο και να συσσωρεύσει θετικό reward. Οι πολιτικές δεν σταθεροποιούνται στο (1/3, 1/3, 1/3) — η αστάθεια είναι πιο έντονη στο RPS λόγω του μεγαλύτερου χώρου ενεργειών (3×3). Αυτό είναι ουσιαστικό: εδώ η self-play δυναμική δεν «ισορροπεί» ούτε σε Nash ούτε σε συμμετρική κατανομή ανταμοιβών. Αντί να καταλήξει σε μικτή Nash, το σύστημα οδηγείται σε κατάσταση όπου ο ένας έχει σταθερό πλεονέκτημα στο συγκεκριμένο training trajectory.
+Σε αντίθεση με το Matching Pennies RL vs RL (όπου τα rewards ήταν σχεδόν 0), εδώ υπάρχει ισχυρή ασυμμετρία (+212 vs −212). Αυτό υποδηλώνει κυκλική ή εκμεταλλευτική δυναμική: ένας RL agent πέτυχε να «προλάβει» τον άλλο και να συσσωρεύσει θετικό reward. Οι πολιτικές δεν σταθεροποιούνται στο (1/3, 1/3, 1/3) — η αστάθεια είναι πιο έντονη στο RPS λόγω του μεγαλύτερου χώρου ενεργειών (3×3). Αυτό είναι ουσιαστικό: εδώ η self-play δυναμική δεν «ισορροπεί» ούτε σε Nash ούτε σε συμμετρική κατανομή ανταμοιβών.
+
+Εκτελέσαμε το ίδιο exploitability sweep και για το RPS (5.000 iterations ανά ζεύγος):
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & \(\varepsilon=0.05\) & \(\varepsilon=0.10\) & \(\varepsilon=0.20\) \\
+\midrule
+\(\alpha=0.01\) & 0.9697 & 0.9393 & 0.8787 \\
+\(\alpha=0.10\) & 0.9697 & 0.9393 & 0.8787 \\
+\(\alpha=0.50\) & 0.9697 & 0.9393 & 0.8787 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Οι τιμές (0.88--0.97) είναι χαμηλότερες από το Matching Pennies — το θεωρητικό μέγιστο στο RPS είναι περίπου 1.33 για καθαρή στρατηγική. Η ίδια μορφή επαναλαμβάνεται: η exploitability εξαρτάται μόνο από το \(\varepsilon\), όχι από το learning rate.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{../../results/plots/rock_paper_scissors/RL vs RL/exploitability_heatmap.png}
+\caption{Exploitability heatmap στο Rock-Paper-Scissors (RL vs RL). Οι τιμές (0.88--0.97) είναι συμβατές με το μεγαλύτερο χώρο ενεργειών.}
+\end{figure}
 
 \subsection{Grid Game (Hunter–Prey, στοχαστικό, turn-based)}
 

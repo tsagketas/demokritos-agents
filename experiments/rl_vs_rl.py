@@ -157,7 +157,7 @@ def run_rl_vs_rl_rps(n_iterations=10000, learning_rate=0.1, epsilon=0.1, seed=42
         f.write("- RL vs RL in Rock-Paper-Scissors should ideally converge to the mixed Nash equilibrium.\n")
         f.write("- Large distances to Nash and strongly positive/negative cumulative rewards indicate cyclic or exploitative dynamics.\n")
         f.write("- Use the strategy plots to see if the policies stabilize or keep cycling between actions.\n\n")
-        f.write("Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png\n")
+        f.write("Plots: strategy1.png, strategy2.png, distance1.png, distance2.png, distance_comparison.png, reward_comparison.png, exploitability_heatmap.png\n")
 
     print("Plots and results.txt saved to results/plots/rock_paper_scissors/(RL vs RL)/")
     return results
@@ -199,6 +199,40 @@ def run_hyperparameter_sweep():
     print(f"Heatmap saved to {heatmap_path}")
 
 
+def run_hyperparameter_sweep_rps():
+    """Run hyperparameter sweep for exploitability heatmap (Rock-Paper-Scissors)."""
+    print("\n" + "="*60)
+    print("RL Hyperparameter Sweep - Exploitability Heatmap (RPS)")
+    print("="*60)
+
+    learning_rates = [0.01, 0.1, 0.5]
+    epsilons = [0.05, 0.1, 0.2]
+    game = RockPaperScissors()
+
+    exploitability_results = np.zeros((len(learning_rates), len(epsilons)))
+
+    for i, lr in enumerate(learning_rates):
+        for j, eps in enumerate(epsilons):
+            rl = QLearningAgent(3, learning_rate=lr, epsilon=eps, name='RL')
+            runner = ExperimentRunner(game, rl, rl, n_iterations=5000, seed=42)
+            results = runner.run(verbose=False)
+
+            from analysis.metrics import exploitability
+            final_strategy = results['agent1_final_strategy']
+            expl = exploitability(final_strategy, game)
+            exploitability_results[i, j] = expl
+
+            print(f"lr={lr:.2f}, eps={eps:.2f}: exploitability={expl:.4f}")
+
+    ensure_results_dir()
+    heatmap_path = get_plot_path('rock_paper_scissors', 'RL vs RL', 'exploitability_heatmap')
+    plot_exploitability_heatmap(
+        exploitability_results, learning_rates, epsilons,
+        heatmap_path
+    )
+    print(f"Heatmap saved to {heatmap_path}")
+
+
 if __name__ == '__main__':
     print("Running RL vs RL Experiments...")
     print("This may take a few minutes...\n")
@@ -209,7 +243,8 @@ if __name__ == '__main__':
     
     # Run hyperparameter sweep
     run_hyperparameter_sweep()
-    
+    run_hyperparameter_sweep_rps()
+
     print("\n" + "="*60)
     print("All RL vs RL experiments completed!")
     print("="*60)

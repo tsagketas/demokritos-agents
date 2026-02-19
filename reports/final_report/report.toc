@@ -26,11 +26,11 @@
 \contentsline {subsubsection}{\numberline {3.2.1}Α. FP vs FP}{11}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Β. FP vs RL}{11}{subsubsection.3.2.2}%
 \contentsline {subsubsection}{\numberline {3.2.3}Γ. RL vs RL}{12}{subsubsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.3}Rock-Paper-Scissors (3×3)}{12}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.3}Rock-Paper-Scissors (3×3)}{13}{subsection.3.3}%
 \contentsline {subsubsection}{\numberline {3.3.1}FP vs FP}{13}{subsubsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.2}FP vs RL}{13}{subsubsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.3}RL vs RL}{13}{subsubsection.3.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.3}RL vs RL}{14}{subsubsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.4}Grid Game (Hunter–Prey, στοχαστικό, turn-based)}{14}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}MinMax vs RL}{14}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}RL vs RL}{15}{subsubsection.3.4.2}%
-\contentsline {section}{\numberline {4}Συμπεράσματα από τα Πειράματα}{16}{section.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}MinMax vs RL}{15}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}RL vs RL}{16}{subsubsection.3.4.2}%
+\contentsline {section}{\numberline {4}Συμπεράσματα από τα Πειράματα}{17}{section.4}%
