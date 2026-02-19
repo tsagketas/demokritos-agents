@@ -108,8 +108,8 @@ docker-compose run --rm game-learning python -m analysis.gif_maker
 
 6. **Παρουσίαση (HTML → PDF):**
    ```bash
-   # 1. Compose slides → project_presentation.html
-   docker-compose run --rm game-learning python presentation/compose_slides.py -d presentation
+   # 1. Compose slides → project_presentation.html (στο game-learning/)
+   docker-compose run --rm game-learning python presentation/compose_slides.py -d presentation/game-learning
 
    # 2. HTML → PDF (μετά από docker-compose build για playwright/img2pdf)
    docker-compose run --rm game-learning python presentation/html_to_pdf.py
